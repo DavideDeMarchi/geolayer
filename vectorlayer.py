@@ -68,6 +68,9 @@
 # Manages vector datasets in files (shapefiles, geopackage, etc.), WKT strings and POSTGIS queries
 #####################################################################################################################################################
 class vectorlayer:
+    """
+    Vector datasets visualization
+    """
     
     # Initialization for vector files (shapefiles, geopackage, etc.)
     def __init__(self,

@@ -25,6 +25,9 @@
 # Class rasterlayer to create server-side VectorLayer instances for raster display without using inter client library
 #####################################################################################################################################################
 class rasterlayer:
+    """
+    Raster datasets visualization
+    """
     
     # Initialization
     def __init__(self,

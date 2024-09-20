@@ -1,10 +1,13 @@
 API
 ===
 
-.. toctree::
-   :maxdepth: 5
-   :caption: Contents:
+.. autosummary::
+   :toctree: generated
 
+    rasterlayer
+    
+    vectorlayer
+    
 
 The geolayer library consists of two classes:
 
@@ -15,6 +18,7 @@ The geolayer library consists of two classes:
 
 .. image:: figures/line.png
 
+
 rasterlayer
 -----------
 
@@ -22,6 +26,7 @@ rasterlayer
     :members:
     
 .. image:: figures/line.png
+
 
 vectorlayer
 -----------
