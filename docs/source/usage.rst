@@ -6,7 +6,7 @@ Usage
 Installation
 ------------
 
-geolayer cannot be installed autonomously. It is already pre-installed inside the JEO-lab docker images of the BDAP platform
+**geolayer** cannot be installed autonomously. It is already pre-installed inside the JEO-lab docker images of the BDAP platform
 
 
 Display raster datasets
@@ -24,7 +24,6 @@ Various display modes are possible:
  - RGB compositions combining three raster bands
 
  - specific display modes for Sentinel-2 products:
-
     - single band
     - RGB composition
     - Index calculation (i.e. NDVI)

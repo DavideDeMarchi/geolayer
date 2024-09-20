@@ -9,7 +9,6 @@ The geolayer library consists of two classes:
 **vectorlayer** is the class that enables the display of shapefiles, geopackage, POSTGIS queries and WKT strings on a ipyleaflet Map
 
 
-
 .. image:: figures/line.png
 
 
