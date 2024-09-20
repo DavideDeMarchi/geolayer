@@ -1,5 +1,4 @@
-"""BDAP (JRC Big Data Analytics Platform) layer creation with minimal dependencies
-(to create server-side inter.VectorLayer instances for vector display without using the client version of inter)."""
+"""Display of vector datasets (shapefiles, geopackage, POSTGIS queries and WKT strings) on a ipyleaflet Map"""
 # Author(s): Davide.De-Marchi@ec.europa.eu
 # Copyright © European Union 2022-2024
 # 

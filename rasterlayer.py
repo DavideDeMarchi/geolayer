@@ -1,5 +1,4 @@
-"""BDAP (JRC Big Data Analytics Platform) layer creation with minimal dependencies
-(to create server-side inter.VectorLayer instances for raster display without using the client version of inter)."""
+"""Display of raster datasets (.tif, .vrt, .nc, and all other formats managed by the GDAL library)"""
 # Author(s): Davide.De-Marchi@ec.europa.eu
 # Copyright © European Union 2022-2024
 # 
