@@ -12,11 +12,27 @@ geolayer cannot be installed autonomously. It is already pre-installed inside th
 Display raster datasets
 -----------------------
 
+To display a raster dataset, the :py:class:`rasterlayer` class can be used. The supported input formats are all those managed by GDAL, like .tif, .vrt, etc.
+Raster files are made-up of pixels that can store categorycal values (usually an integer defining a class) or physical values (an integer or a floting point value representing a measurement): both types of raster datasets can be displayed using the geolayer library.
 
+Various display modes are possible: 
+ 
+ - single band display using a continuous color palette 
+
+ - single band display using a colormap (a dictionary that assigns a color to each of the classes of a categorical raster)
+
+ - RGB compositions combining three raster bands
+
+ - specific display modes for Sentinel-2 products:
+
+    - single band
+    - RGB composition
+    - Index calculation (i.e. NDVI) 
 
 Display vector datasets
 -----------------------
 
+To display a vector dataset, the :py:class:`vectorlayer` class can be used.
 
 .. note::
 
@@ -60,7 +76,7 @@ Display vector datasets
 
     For a complete guide of the mapnik filter syntax, see the `Mapnik Filter syntax page <https://github.com/mapnik/mapnik/wiki/Filter>`_
 
-    When creating legend of symbols, it can be useful to use "parametric" symbols. These are symbols where some of the visual attributes are written in a generic manner, by using some predefined keywords (like 'COLOR', 'FILL-COLOR', 'FILL-OPACITY', 'STROKE-COLOR', 'STROKE-WIDTH', etc.). The static method vectorlayer.symbolChange can be used to change a parametric symbol
+    When creating legend of symbols, it can be useful to use "parametric" symbols. These are symbols where some of the visual attributes are written in a generic manner, by using some predefined keywords (like 'COLOR', 'FILL-COLOR', 'FILL-OPACITY', 'STROKE-COLOR', 'STROKE-WIDTH', etc.). The static method vectorlayer.symbolChange can be used to change a parametric symbol.
 
     Example:
 
@@ -94,7 +110,7 @@ Here is a screenshot of the tool:
 
 This web application can visually build symbols for points, polylines and polygons features. For each symbol, one or more layer(s) can be created, thus overlapping different descriptors to the visual representation of the features.
 
-This is the interface for inserting point symbols:
+This is the interface for creating point symbols:
 
 .. image:: figures/pointSymbol.png
 
@@ -103,12 +119,12 @@ A vast selection of marker symbols can be browsed and searched to be inserted in
 .. image:: figures/markerSelect.png
 
 
-This is the interface for inserting polyline symbols:
+This is the interface for creating polyline symbols:
 
 .. image:: figures/polylineSymbol.png
 
 
-This is the interface for inserting polygon symbols:
+This is the interface for creating polygon symbols:
 
 .. image:: figures/polygonSymbol.png
 
