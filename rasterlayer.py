@@ -47,6 +47,9 @@ class rasterlayer:
     # Query Sentinel2 BDAP STAC item if input is a string (i.e. 'S2A_MSIL2A_20230910T100601_N0509_R022_T32TQP_20230910T161500')
     @staticmethod
     def sentinel2item(stacitem):
+        """
+        Static method to retrieve a STAC item from BDAP
+        """
         pass
 
     
@@ -142,6 +145,9 @@ class rasterlayer:
         
     # Print info on instance    
     def print(self):
+        """
+        Print class description
+        """
         pass
         
     #####################################################################################################################################################
