@@ -13,7 +13,7 @@ Display raster datasets
 -----------------------
 
 To display a raster dataset, the :py:class:`rasterlayer` class can be used. The supported input formats are all those managed by GDAL, like .tif, .vrt, etc.
-Raster files are made-up of pixels that can store categorycal values (usually an integer defining a class) or physical values (an integer or a floting point value representing a measurement): both types of raster datasets can be displayed using the geolayer library.
+Raster files are made-up of pixels that can store categorical values (usually an integer defining a class) or physical values (an integer or a floting point value representing a measurement): both types of raster datasets can be displayed using the geolayer library.
 
 Various display modes are possible: 
  
@@ -27,7 +27,9 @@ Various display modes are possible:
 
     - single band
     - RGB composition
-    - Index calculation (i.e. NDVI) 
+    - Index calculation (i.e. NDVI)
+    
+
 
 Display vector datasets
 -----------------------

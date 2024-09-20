@@ -66,6 +66,46 @@ class rasterlayer:
                identify_integer=False,       # True if the identify operation should convert pixels values to integer
                identify_digits=6,            # Number of digits for identify of float values
                identify_label='Value'):      # Label for identify operation
+        """
+        Single layer raster display. 
+        
+        Parameters
+        ----------
+        filepath : str
+            File path of the raster to display.
+        band : int, optional
+            Band number to display form 1 to n (default is 1).
+        epsg : int, optional
+            EPSG code of the coordinate system to use (default is 4326, the geographical coordinates).
+        proj : str, optional
+            Proj4 string of the coordinate system to use (default is the empty string). If a non-empty string is passes, this parameter has prevalence over the epsg code.
+        nodata : float, optional
+            Value to be cosidered as absence of data (default is 999999.0).
+        identify_dict : dict, optional
+            Dictionary to convert integer pixel values to strings (e.g. classes names). Default is None.
+        identify_integer : bool, optional
+            True if the identify operation should convert pixels values to integer (default is False).
+        identify_digits : int, optional
+            Number of digits for the identify of float values (default is 6).
+        identify_label : str, optional
+            Label for identify operation (default is 'Value')
+            
+        Example
+        -------
+        Display of a single band from a TIFF file::
+        
+            from IPython.display import display
+            from vois.geo import Map
+            from geolayer import rasterlayer
+
+            ly = rasterlayer.single('/eos/jeodpp/data/SRS/Copernicus/Services/Land/Pan-European/SmallWoodyFeatures/SWF2018/VER1-0/Data/VRT/SWF_2018_005m_03035_V1_0.vrt', band=1, epsg=3035, nodata=0.0)
+            ly.color(value=1.0, color="#cefc20", mode="exact")
+
+            m = Map.Map(zoom=14, basemapindex=1)
+            m.addLayer(ly)
+            m.onclick = ly.onclick
+            display(m)
+        """
         pass
 
     #####################################################################################################################################################
