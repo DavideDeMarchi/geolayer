@@ -175,6 +175,21 @@ class vectorlayer:
 
     @property
     def identify_fields(self):
+        """
+        Get/Set the list of attributes to return on an identify operation (click on a vector feature).
+        
+        Returns
+        --------
+        list_of_attributes : list
+            Names of the attributes to return on an identify operation
+
+        Example
+        -------
+        Programmatically change the list of attributes::
+            
+            vlayer.identify_fields = ['attribute1', 'attribute2']
+            print(vlayer.identify_fields)
+        """
         pass
         
     @identify_fields.setter

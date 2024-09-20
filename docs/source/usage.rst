@@ -16,3 +16,7 @@ Display raster datasets
 Display vector datasets
 -----------------------
 
+
+Create symbols for vector datasets display
+------------------------------------------
+
