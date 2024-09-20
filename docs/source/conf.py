@@ -1,16 +1,21 @@
 # Configuration file for the Sphinx documentation builder.
 
-# -- Project information
+# -- Custom settings
 import os
 import sys
 sys.path.insert(0, os.path.abspath(os.path.join('..', '..')))
 
+html_show_sourcelink = False
+
+
+# -- Project information
 project = 'geolayer'
 copyright = 'Copyright © European Union 2024'
 author = 'Davide De Marchi'
 
 release = '0.0'
 version = '0.0.4'
+
 
 # -- General configuration
 
@@ -31,9 +36,11 @@ intersphinx_disabled_domains = ['std']
 
 templates_path = ['_templates']
 
+
 # -- Options for HTML output
 
 html_theme = 'sphinx_rtd_theme'
+
 
 # -- Options for EPUB output
 epub_show_urls = 'footnote'
