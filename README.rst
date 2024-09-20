@@ -1,9 +1,6 @@
-Template for the Read the Docs tutorial
-=======================================
+geolayer documentation repository
+=================================
 
-This GitHub template includes fictional Python library
-with some basic Sphinx docs.
+![logo](./logo/geolayer_black_white_1024.png)
 
-Read the tutorial here:
-
-https://docs.readthedocs.io/en/stable/tutorial/
+This repo contains the documentation version of the BDAP geolayer library

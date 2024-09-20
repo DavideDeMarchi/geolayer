@@ -2,12 +2,12 @@
 
 # -- Project information
 
-project = 'Lumache'
-copyright = '2021, Graziella'
-author = 'Graziella'
+project = 'geolayer'
+copyright = 'Copyright © European Union 2024'
+author = 'Davide De Marchi'
 
-release = '0.1'
-version = '0.1.0'
+release = '0.0'
+version = '0.0.4'
 
 # -- General configuration
 
