@@ -74,11 +74,11 @@ class rasterlayer:
         filepath : str
             File path of the raster to display.
         band : int, optional
-            Band number to display form 1 to n (default is 1).
+            Band number (from 1 to n) to display (default is 1).
         epsg : int, optional
             EPSG code of the coordinate system to use (default is 4326, the geographical coordinates).
         proj : str, optional
-            Proj4 string of the coordinate system to use (default is the empty string). If a non-empty string is passes, this parameter has prevalence over the epsg code.
+            Proj4 string of the coordinate system to use (default is the empty string). If a non-empty string is passed, the proj parameter has prevalence over the epsg code.
         nodata : float, optional
             Value to be cosidered as absence of data (default is 999999.0).
         identify_dict : dict, optional
@@ -183,7 +183,63 @@ class rasterlayer:
             scalemax=None,   # Single float or array of 3 floats
             scaling='near',
             opacity=1.0):
-        pass
+        """
+        RGB composition of three bands of a raster dataset. 
+        
+        Parameters
+        ----------
+        filepath : str
+            File path of the raster to display.
+        bandR : int, optional
+            Band number (from 1 to n) to display in the Red channel (default is 1).
+        bandG : int, optional
+            Band number (from 1 to n) to display in the Green channel (default is 2).
+        bandB : int, optional
+            Band number (from 1 to n) to display in the Blue channel (default is 3).
+        epsg : int, optional
+            EPSG code of the coordinate system to use (default is 4326, the geographical coordinates).
+        nodata : float, optional
+            Value to be cosidered as absence of data (default is 999999.0).
+        scaling : str, optional
+            Scaling mode (one of 'near', 'fast', 'bilinear', 'bicubic', 'spline16', 'spline36', 'hanning', 'hamming', 'hermite', 'kaiser', 'quadric', 'catrom', 'gaussian', 'bessel', 'mitchell', 'sinc', 'lanczos', 'blackman'). Default is 'near'.
+        scalemin : float or list of 3 floats, optional
+            Minimum scaling value to convert from raster values to the interval [0,255] (default is None)
+        scalemax : float or list of 3 floats, optional
+            Maximum scaling value to convert from raster values to the interval [0,255] (default is None)
+        opacity : float, optional
+            Opacity value (from 0.0 to 1.0) to display the RGB composition with partial transparency (default is 1.0, fully opaque)
+            
+        Example
+        -------
+        Display of a RGB composition from a VRT file::
+        
+            # Import libraries
+            from IPython.display import display
+            from vois.geo import Map
+            from geolayer import rasterlayer
+
+            # Create a RGB composition istance to display bands 3,2,1 of a VRT file
+            ly = rasterlayer.rgb('.../GLOBAL/UMD/GFC/VER1-7/Data/VRT/last/Hansen_GFC-2019-v1.7_last.vrt',
+                                 nodata=0.0,
+                                 bandR=3,
+                                 bandG=2,
+                                 bandB=1,
+                                 scalemin=[0.0, 0.0, 0.0],
+                                 scalemax=[120.0, 100.0, 105.0],
+                                 scaling='bilinear')
+
+            # Create a Map
+            m = Map.Map()
+            
+            # Add the layer to the map
+            m.addLayer(ly)
+            
+            # Set the identify operation
+            m.onclick = ly.onclick
+            
+            # Display the map
+            display(m)
+        """
             
     #####################################################################################################################################################
     # Print

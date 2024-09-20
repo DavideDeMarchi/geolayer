@@ -24,8 +24,11 @@ Various display modes are possible:
  - RGB compositions combining three raster bands
 
  - specific display modes for Sentinel-2 products:
+ 
     - single band
+    
     - RGB composition
+    
     - Index calculation (i.e. NDVI)
     
 

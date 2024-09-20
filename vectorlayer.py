@@ -20,49 +20,6 @@
 
 
 #####################################################################################################################################################
-# Notes on symbology:
-#
-# A symbol is a list of lists of items each having 3 elements: [SymbolizerName, KeyName, Value]
-# Each list inside the symbol is mapped into a style (from style0 to style9), thus allowing for overlapped symbols
-#
-# Example:
-# symbol = [
-#             [
-#                ["PolygonSymbolizer", "fill", '#ff0000'],
-#                ["PolygonSymbolizer", "fill-opacity", 0.3],
-#                ["LineSymbolizer", "stroke", "#010000"],
-#                ["LineSymbolizer", "stroke-width", 2.0]
-#             ]
-# ]
-#
-# Example on how to manage symbology:
-#
-#    vlayer = vectorlayer.file('path to a .shp file', epsg=4326)
-#    vlayer.symbologyClear()
-#    vlayer.symbologyAdd(symbol=symbol)                              # Apply symbol to all features of the vectorlayer
-#    vlayer.symbologyAdd(rule="[CNTR_CODE] = 'IT'", symbol=symbol)   # Apply symbol only to features that are filtered by the rule on attributes
-#                                                                    # See https://github.com/mapnik/mapnik/wiki/Filter for help on filter sintax
-#    mapUtils.addLayer(m, vlayer.tileLayer(), name='Polygons')
-#
-#
-# The static methos vectorlayer.symbolChange can be used to change a parametric symbol
-#
-# Example:
-# symbol = [
-#             [
-#                ["PolygonSymbolizer", "fill", 'FILL-COLOR'],
-#                ["PolygonSymbolizer", "fill-opacity", 0.3],
-#                ["LineSymbolizer", "stroke", "#010000"],
-#                ["LineSymbolizer", "stroke-width", 2.0]
-#             ]
-# ]
-#
-# s = vectorlayer.symbolChange(fillColor='red')
-#
-#####################################################################################################################################################
-
-
-#####################################################################################################################################################
 # Class vectorlayer to create server-side VectorLayer instances for vector display without using inter client library
 # Manages vector datasets in files (shapefiles, geopackage, etc.), WKT strings and POSTGIS queries
 #####################################################################################################################################################
@@ -89,7 +46,62 @@ class vectorlayer:
              layer='',      # Name of the layer (for a shapefile leave it empty)
              epsg=4326,
              proj=''):      # To be used for projections that do not have an EPSG code (if not empty it is used instead of the passed epsg)
-        pass
+        """
+        Display of a file-based vector dataset.
+        
+        Parameters
+        ----------
+        filepath : str
+            File path of the vector dataset to display (shapefile, geopackage, etc.)
+        layer : str, optional
+            Name of the layer to display (for a shapefile it can be empty). Default is ''.
+        epsg : int, optional
+            EPSG code of the coordinate system to use (default is 4326, the geographical coordinates).
+        proj : str, optional
+            Proj4 string of the coordinate system to use (default is the empty string). If a non-empty string is passed, the proj parameter has prevalence over the epsg code.
+            
+        Example
+        -------
+        Display of a RGB composition from a VRT file::
+        
+            # Import libraries
+            from IPython.display import display
+            from vois.geo import Map
+            from geolayer import vectorlayer
+
+            # Create a vectorlayer instance from a file dataset (shapefile)
+            vlayer = vectorlayer.file('.../NUTS_RG_03M_2021_4326_0.shp', epsg=4326, proj='+init=epsg:4326')
+
+            # Define a parametric symbol ('FILL-COLOR' to be substituted with actual color)
+            symbol = [
+                        [
+                           ["PolygonSymbolizer", "fill", 'FILL-COLOR'],
+                           ["PolygonSymbolizer", "fill-opacity", 0.8],
+                           ["LineSymbolizer", "stroke", "#000000"],
+                           ["LineSymbolizer", "stroke-width", 1.0]
+                        ]
+            ]
+
+            vlayer.symbologyClear()
+            
+            # Assign a red symbol to all features
+            vlayer.symbologyAdd(symbol=vectorlayer.symbolChange(symbol, fillColor='red'))
+            
+            # Assign another symbol to a subset of the features
+            vlayer.symbologyAdd(rule="[CNTR_CODE] = 'IT'", symbol=vectorlayer.symbolChange(symbol, fillColor='#00aa00'))
+
+            # Create a Map
+            m = Map.Map()
+            
+            # Add the layer to the map
+            m.addLayer(vlayer)
+            
+            # Set the identify operation
+            m.onclick = vlayer.onclick
+            
+            # Display the map
+            display(m)
+        """
     
     
     #####################################################################################################################################################
