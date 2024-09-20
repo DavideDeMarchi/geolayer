@@ -92,18 +92,30 @@ class rasterlayer:
             
         Example
         -------
-        Display of a single band from a TIFF file::
+        Display of a single band from a VRT file::
         
+            # Import libraries
             from IPython.display import display
             from vois.geo import Map
             from geolayer import rasterlayer
 
-            ly = rasterlayer.single('/eos/jeodpp/data/SRS/Copernicus/Services/Land/Pan-European/SmallWoodyFeatures/SWF2018/VER1-0/Data/VRT/SWF_2018_005m_03035_V1_0.vrt', band=1, epsg=3035, nodata=0.0)
+            # Create a single rasterlayer istance to display the first band of a VRT file
+            ly = rasterlayer.single('.../Copernicus/Services/Land/Pan-European/SmallWoodyFeatures/SWF2018/VER1-0/Data/VRT/SWF_2018_005m_03035_V1_0.vrt', 
+                                    band=1, epsg=3035, nodata=0.0)
+                                    
+            # Display all pixels having value 1 with a pale green color (see ... for a complete description)
             ly.color(value=1.0, color="#cefc20", mode="exact")
 
+            # Create a Map
             m = Map.Map(zoom=14, basemapindex=1)
+            
+            # Add the layer to the map
             m.addLayer(ly)
+            
+            # Set the identify operation
             m.onclick = ly.onclick
+            
+            # Display the map
             display(m)
         """
         pass
