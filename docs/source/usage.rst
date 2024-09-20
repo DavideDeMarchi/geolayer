@@ -19,14 +19,19 @@ Display vector datasets
 
 .. note::
 
-    Notes on symbology:
+    Vector symbology format:
 
-    A symbol is a list of lists of items each having 3 elements: [SymbolizerName, KeyName, Value]
+    Inside BDAP, vector datasets are rendered using a dynamic tile server that converts vector features into raster tiles using the `Mapnik library <https://mapnik.org/>`_
+
+
+    In geolayer, a symbol is a list of lists of items each having 3 elements: [SymbolizerName, KeyName, Value].
+
     Each list inside the symbol is mapped into a style (from style0 to style9), thus allowing for overlapped symbols
 
     Example:
 
     .. code-block:: console
+
         symbol = [
                     [
                        ["PolygonSymbolizer", "fill", '#ff0000'],
@@ -40,19 +45,25 @@ Display vector datasets
 
     .. code-block:: console
 
-        vlayer = vectorlayer.file('path to a .shp file', epsg=4326)
+       vlayer = vectorlayer.file('path to a .shp file', epsg=4326)
        vlayer.symbologyClear()
-       vlayer.symbologyAdd(symbol=symbol)                              # Apply symbol to all features of the vectorlayer
-       vlayer.symbologyAdd(rule="[CNTR_CODE] = 'IT'", symbol=symbol)   # Apply symbol only to features that are filtered by the rule on attributes
-                                                                       # See https://github.com/mapnik/mapnik/wiki/Filter for help on filter sintax
+
+       # Apply symbol to all features of the vectorlayer
+       vlayer.symbologyAdd(symbol=symbol)
+
+       # Apply symbol only to features that are filtered by the rule on attributes
+       vlayer.symbologyAdd(rule="[CNTR_CODE] = 'IT'", symbol=symbol)
+
        m.add(vlayer.tileLayer())
 
+    For a complete guide of the mapnik filer syntax, see the `Mapnik Filter syntax page <https://github.com/mapnik/mapnik/wiki/Filter>`_
 
     The static methos vectorlayer.symbolChange can be used to change a parametric symbol
 
     Example:
 
     .. code-block:: console
+
         symbol = [
                     [
                        ["PolygonSymbolizer", "fill", 'FILL-COLOR'],
@@ -68,4 +79,11 @@ Display vector datasets
 
 Create symbols for vector datasets display
 ------------------------------------------
+
+To help users of the geolayer library to create symbols for their vector datasets display, an online tool was developed and deployed on the Microsoft Azure Cloud: `the Symbol Editor <https://geolayer.azurewebsites.net/>`_
+
+Here is a screenshot of the tool:
+
+.. image:: ./figures/SymbolEditor.png
+
 
