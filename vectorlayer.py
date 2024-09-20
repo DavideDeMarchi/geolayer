@@ -62,7 +62,7 @@ class vectorlayer:
             
         Example
         -------
-        Display of a RGB composition from a VRT file::
+        Display of a shapefile::
         
             # Import libraries
             from IPython.display import display
@@ -82,12 +82,13 @@ class vectorlayer:
                         ]
             ]
 
+            # Remove default symbology
             vlayer.symbologyClear()
             
             # Assign a red symbol to all features
             vlayer.symbologyAdd(symbol=vectorlayer.symbolChange(symbol, fillColor='red'))
             
-            # Assign another symbol to a subset of the features
+            # Assign a green symbol to a subset of the features
             vlayer.symbologyAdd(rule="[CNTR_CODE] = 'IT'", symbol=vectorlayer.symbolChange(symbol, fillColor='#00aa00'))
 
             # Create a Map
