@@ -422,7 +422,7 @@ class vectorlayer:
         lat : float
             Latitude coordinate of the point for which to perform the identify operation.
         zoom : int
-            Zoom level in [0,20] to use for the identify operation.
+            Zoom level in the range [0,20] to use for the identify operation.
         
         Returns
         --------
@@ -524,34 +524,35 @@ def symbol2Image(symbol=[], size=1, feature='Point', clipdimension=999, showbord
     showborder : bool, optional
         If True a thin border is added to the image (default is False).
         
-        Example
-        -------
-        Create a Pillow image from a symbol::
+    Example
+    -------
+    Create a Pillow image from a symbol::
         
-            # Import libraries
-            from IPython.display import display
-            from geolayer import vectorlayer
+        # Import libraries
+        from IPython.display import display
+        from geolayer import vectorlayer
             
-            symbol = [
-                        [
-                           ["PolygonSymbolizer", "fill", 'yellow'],
-                           ["PolygonSymbolizer", "fill-opacity", 0.2],
-                           ["LineSymbolizer", "stroke", "#00ff00"],
-                           ["LineSymbolizer", "stroke-width", 4.0]
-                        ]
-            ]
+        symbol = [
+                    [
+                        ["PolygonSymbolizer", "fill", 'yellow'],
+                        ["PolygonSymbolizer", "fill-opacity", 0.2],
+                        ["LineSymbolizer", "stroke", "#00ff00"],
+                        ["LineSymbolizer", "stroke-width", 4.0]
+                    ]
+        ]
             
-            # Create the image
-            img = vectorlayer.symbol2Image(symbol, feature='Polygon', size=2, showborder=True)
+        # Create the image
+        img = vectorlayer.symbol2Image(symbol, feature='Polygon',
+                                       size=2, showborder=True)
             
-            # Display the image
-            display(img)
+        # Display the image
+        display(img)
             
             
-        .. figure:: figures/PillowImage.png
-            :width: 100px
+    .. figure:: figures/PillowImage.png
+        :width: 100px
         
-        Image created by the example code
+    Image created by the example code
     
     """
     pass
