@@ -122,7 +122,7 @@ class vectorlayer:
             display(m)
             
 
-        .. image:: figures/line.png
+    .. image:: figures/line.png
         """
     
     
@@ -185,7 +185,7 @@ class vectorlayer:
             display(m)
             
             
-        .. image:: figures/line.png
+    .. image:: figures/line.png
         """
     
     
@@ -290,7 +290,7 @@ class vectorlayer:
             display(m)
             
             
-        .. image:: figures/line.png
+    .. image:: figures/line.png
         """
         pass
 
