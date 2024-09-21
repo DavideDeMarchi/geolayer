@@ -216,7 +216,7 @@ class vectorlayer:
         
         
         
-.. tip::
+.. note::
     Always pass a valid extents string, since this will make the display much faster in most cases.
 
 
