@@ -25,7 +25,27 @@
 #####################################################################################################################################################
 class rasterlayer:
     """
-    Raster datasets visualization
+    Raster datasets visualization. Class to display any type of raster dataset format managed by the GDAL library.
+
+    An instance of this class can be created using one of these class methods:
+    
+    - :py:meth:`~rasterlayer.single`
+    - :py:meth:`~rasterlayer.rgb`
+    
+    For Sentinel-2 products, these class methods can be used:
+    
+    - :py:meth:`~rasterlayer.sentinel2single`
+    - :py:meth:`~rasterlayer.sentinel2rgb`
+    - :py:meth:`~rasterlayer.sentinel2index`
+    
+    To define the visual appearance of rasters, these methods can be used:
+    
+    - :py:meth:`~rasterlayer.symbolizer`
+    - :py:meth:`~rasterlayer.colorizer`
+    - :py:meth:`~rasterlayer.color`
+    - :py:meth:`~rasterlayer.colorlist`
+    - :py:meth:`~rasterlayer.colormap`
+
     """
     
     # Initialization
@@ -43,15 +63,6 @@ class rasterlayer:
 
     
 
-    # Query Sentinel2 BDAP STAC item if input is a string (i.e. 'S2A_MSIL2A_20230910T100601_N0509_R022_T32TQP_20230910T161500')
-    @staticmethod
-    def sentinel2item(stacitem):
-        """
-        Static method to retrieve a STAC item from BDAP
-        """
-        pass
-
-    
     #####################################################################################################################################################
     # Initialization for displaying a single band from a file (any of the formats managed by GDAL). Also files stored in redis, by using "redis:"+key
     #####################################################################################################################################################
@@ -120,53 +131,6 @@ class rasterlayer:
         """
         pass
 
-    #####################################################################################################################################################
-    # Display a single band Sentinel-2 product
-    #####################################################################################################################################################
-    @classmethod
-    def sentinel2single(cls,
-                        stacitem,
-                        band='B04',
-                        scalemin=None,
-                        scalemax=None,
-                        colorlist=['#000000','#ffffff'],
-                        scaling='near',
-                        opacity=1.0):
-        pass
-    
-
-    #####################################################################################################################################################
-    # Display an RGB 3 bands composition of a Sentinel-2 product
-    #####################################################################################################################################################
-    @classmethod
-    def sentinel2rgb(cls,
-                     stacitem,        # STAC item containing info on the Sentinel-2 product
-                     bandR='B04',
-                     bandG='B03',
-                     bandB='B02',
-                     scalemin=None,   # Single float or array of 3 floats
-                     scalemax=None,   # Single float or array of 3 floats
-                     scaling='near',
-                     opacity=1.0):
-        pass
-            
-
-    #####################################################################################################################################################
-    # Display an index calculated from 2 bands (b1 - b2)/(b1 + b2) of a Sentinel-2 product
-    #####################################################################################################################################################
-    @classmethod
-    def sentinel2index(cls,
-                       stacitem,        # STAC item containing info on the Sentinel-2 product
-                       band1='B08',
-                       band2='B04',
-                       scalemin=0,
-                       scalemax=0.75,
-                       colorlist=['#784519', '#ffb24a', '#ffeda6', '#ade85e', '#87b540', '#039c00', '#016400', '#015000'],  # BDAP standard NDVI palette
-                       scaling='near',
-                       opacity=1.0):
-        pass
-    
-    
     
     #####################################################################################################################################################
     # Display an RGB 3 bands composition of a single generic raster file
@@ -240,6 +204,72 @@ class rasterlayer:
             # Display the map
             display(m)
         """
+        
+    
+    #####################################################################################################################################################
+    # Display a single band Sentinel-2 product
+    #####################################################################################################################################################
+    @classmethod
+    def sentinel2single(cls,
+                        stacitem,
+                        band='B04',
+                        scalemin=None,
+                        scalemax=None,
+                        colorlist=['#000000','#ffffff'],
+                        scaling='near',
+                        opacity=1.0):
+        """
+        Display a single band Sentinel-2 product.
+        """
+        pass
+    
+
+    #####################################################################################################################################################
+    # Display an RGB 3 bands composition of a Sentinel-2 product
+    #####################################################################################################################################################
+    @classmethod
+    def sentinel2rgb(cls,
+                     stacitem,        # STAC item containing info on the Sentinel-2 product
+                     bandR='B04',
+                     bandG='B03',
+                     bandB='B02',
+                     scalemin=None,   # Single float or array of 3 floats
+                     scalemax=None,   # Single float or array of 3 floats
+                     scaling='near',
+                     opacity=1.0):
+        """
+        Display an RGB 3 bands composition of a Sentinel-2 product.
+        """
+        pass
+            
+
+    #####################################################################################################################################################
+    # Display an index calculated from 2 bands (b1 - b2)/(b1 + b2) of a Sentinel-2 product
+    #####################################################################################################################################################
+    @classmethod
+    def sentinel2index(cls,
+                       stacitem,        # STAC item containing info on the Sentinel-2 product
+                       band1='B08',
+                       band2='B04',
+                       scalemin=0,
+                       scalemax=0.75,
+                       colorlist=['#784519', '#ffb24a', '#ffeda6', '#ade85e', '#87b540', '#039c00', '#016400', '#015000'],  # BDAP standard NDVI palette
+                       scaling='near',
+                       opacity=1.0):
+        """
+        Display an index calculated from 2 bands (b1 - b2)/(b1 + b2) of a Sentinel-2 product.
+        """
+        pass
+    
+    
+    # Query Sentinel2 BDAP STAC item if input is a string (i.e. 'S2A_MSIL2A_20230910T100601_N0509_R022_T32TQP_20230910T161500')
+    @staticmethod
+    def sentinel2item(stacitem):
+        """
+        Static method to retrieve a STAC item from BDAP.
+        """
+        pass
+    
             
     #####################################################################################################################################################
     # Print
@@ -253,7 +283,7 @@ class rasterlayer:
     # Print info on instance    
     def print(self):
         """
-        Print class description
+        Print class description.
         """
         pass
         
@@ -266,6 +296,9 @@ class rasterlayer:
                    scaling="near",
                    opacity=1.0,
                    composition=""):
+        """
+        Create a symbolizer: see https://github.com/mapnik/mapnik/wiki/RasterSymbolizer
+        """
         pass
         
         
@@ -274,35 +307,71 @@ class rasterlayer:
                   default_mode="linear",
                   default_color="transparent",
                   epsilon=1.5e-07):
+        """
+        Create a colorizer: see https://github.com/mapnik/mapnik/wiki/RasterColorizer
+        """
         pass
 
+    
     # Add a colorizer step: see https://github.com/mapnik/mapnik/wiki/RasterColorizer#example-xml
     def color(self,
               value,            # Numerical value
               color="red",      # name of color or "#rrggbb"
               mode="linear"):   # "discrete", "linear" or "exact"
-        pass
-        
-    # Add a colorlist linearly scaled from a min to a max value
-    def colorlist(self, scalemin, scalemax, colorlist):
+        """
+        Add a colorizer step: see https://github.com/mapnik/mapnik/wiki/RasterColorizer#example-xml
+        """
         pass
 
+    
+    # Add a colorlist linearly scaled from a min to a max value
+    def colorlist(self, scalemin, scalemax, colorlist):
+        """
+        Add a colorlist linearly scaled from a min to a max value
+        """
+        pass
+
+    
     # Add a dictionary having key: raster values, value: colors
     def colormap(self, values2colors, mode='linear'):
+        """
+        Add a dictionary having key: raster values, value: colors
+        """
         pass
-            
+
+    
     #####################################################################################################################################################
     # Identify methods
     #####################################################################################################################################################
     
     # Identify: returns a scalar float/int/string or a list of scalars
     def identify(self, lon, lat, zoom):
+        """
+        Given in input a geographic coordinate  and a zoom level, returns a scalar float/int/string or a list of scalars containing info on the pixel under the (lat,lon) position.
+
+        
+        Parameters
+        ----------
+        lon : float
+            Longitude coordinate of the point for which to perform the identify operation.
+        lat : float
+            Latitude coordinate of the point for which to perform the identify operation.
+        zoom : int
+            Zoom level in the range [0,20] to use for the identify operation.
+        
+        Returns
+        --------
+        res : float/int/string or list of float/int/string
+            A scalar float/int/string or a list of scalars
+        """
         pass
 
+    
     # onclick called by a Map.Map instance
     def onclick(self, m, lon, lat, zoom):
         pass
 
+    
     #####################################################################################################################################################
     # Properties
     #####################################################################################################################################################
@@ -350,6 +419,35 @@ class rasterlayer:
 
     # Returns an instance of ipyleaflet.TileLayer
     def tileLayer(self, max_zoom=22):
+        """
+        Creates an ipyleaflet.TileLayer object from an instance of rasterlayer, to be added to a Map for display.
+        
+        Returns
+        --------
+        tlayer : ipyleaflet.TileLayer
+            Instance of ipyleaflet.TileLayer to be added to a Map
+
+        Example
+        -------
+        Create an ipyleaflet.TileLayer instance::
+        
+            # Import libraries
+            from IPython.display import display
+            import ipyleaflet
+            from geolayer import rasterlayer
+
+            # Create a rasterlayer instance
+            rlayer = rasterlayer.file(...)
+            
+            # Create an ipyleaflet Map
+            m = ipyleaflet.Map()
+            
+            # Add the layer to the map
+            m.add(rlayer.tileLayer())
+            
+            # Display the map
+            display(m)
+        """
         pass
 
         

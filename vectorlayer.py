@@ -25,7 +25,8 @@
 #####################################################################################################################################################
 class vectorlayer:
     """
-    Vector datasets visualization. It can display vector file datasets (shapefiles, geopackage, etc.), WKT strings (see: `Well Known Text format <https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry>`_) and POSTGIS geospatial tables and queries.
+    Vector datasets visualization. Class to display vector file datasets (shapefiles, geopackage, etc.), WKT strings (see: `Well Known Text format <https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry>`_) and POSTGIS geospatial tables and queries.
+    
     An instance of this class can be created using one of these class methods:
     
     - :py:meth:`~vectorlayer.file`
