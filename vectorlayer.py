@@ -40,6 +40,8 @@ class vectorlayer:
     A *parametric* symbol can be defined using tags like FILL-COLOR, STROKE-WIDTH, etc. that can be substituted with real values using the static method :py:meth:`~vectorlayer.symbolChange`.
     
     See the chapter :ref:`symbol-format-help` for a guide on how symbols are defined and the chapter :ref:`symbol-editor-help` for help on the visual Symbol Editor.
+
+    .. image:: figures/line.png
     """
     
     # Initialization for vector files (shapefiles, geopackage, etc.)
@@ -62,8 +64,6 @@ class vectorlayer:
              epsg=4326,
              proj=''):      # To be used for projections that do not have an EPSG code (if not empty it is used instead of the passed epsg)
         """
-        .. image:: figures/line.png
-        
         Display of a file-based vector dataset on an ipyleaflet Map.
         
         Parameters
@@ -120,6 +120,9 @@ class vectorlayer:
             
             # Display the map
             display(m)
+            
+
+        .. image:: figures/line.png
         """
     
     
@@ -180,6 +183,9 @@ class vectorlayer:
             
             # Display the map
             display(m)
+            
+            
+        .. image:: figures/line.png
         """
     
     
@@ -282,6 +288,9 @@ class vectorlayer:
             
             # Display the map
             display(m)
+            
+            
+        .. image:: figures/line.png
         """
         pass
 
