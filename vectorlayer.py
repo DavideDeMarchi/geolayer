@@ -103,7 +103,7 @@ class vectorlayer:
             # Display the map
             display(m)
             
-        To visually edit symbols, please use the `Symbol Editor <https://geolayer.azurewebsites.net>`_
+        To visually edit symbols, please use the `Symbol Editor <https://geolayer.azurewebsites.net>`_ described in chapter :ref:`Create symbols for vector datasets`.
         """
     
     
@@ -165,7 +165,7 @@ class vectorlayer:
             # Display the map
             display(m)
             
-        To visually edit symbols, please use the `Symbol Editor <https://geolayer.azurewebsites.net>`_
+        To visually edit symbols, please use the `Symbol Editor <https://geolayer.azurewebsites.net>`_ described in chapter :ref:`Create symbols for vector datasets`.
         """
     
     
