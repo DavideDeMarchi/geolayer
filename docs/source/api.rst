@@ -27,7 +27,7 @@ vectorlayer
 -----------
 
 .. tip::            
-    To visually edit symbols for vector datasets display, please use the `Symbol Editor <https://geolayer.azurewebsites.net>`_ described in chapter :ref:`symbol-editor-help`.
+    The chapter :ref:`symbol-format-help` contains a guide on how symbology can be defined for vector datasets display. To visually edit symbols for vector datasets display, please use the `Symbol Editor <https://geolayer.azurewebsites.net>`_ described in chapter :ref:`symbol-editor-help`.
 
 
 .. automodule:: vectorlayer

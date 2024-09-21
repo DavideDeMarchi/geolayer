@@ -437,7 +437,7 @@ class rasterlayer:
             from geolayer import rasterlayer
 
             # Create a rasterlayer instance
-            rlayer = rasterlayer.file(...)
+            rlayer = rasterlayer.single(...)
             
             # Create an ipyleaflet Map
             m = ipyleaflet.Map()
