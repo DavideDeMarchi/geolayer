@@ -13,7 +13,7 @@ project = 'geolayer'
 copyright = 'Copyright © European Union 2024'
 author = 'Davide De Marchi'
 
-release = '0.0'
+release = '0.0.4'
 version = '0.0.4'
 
 
