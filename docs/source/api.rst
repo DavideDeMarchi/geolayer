@@ -26,9 +26,10 @@ rasterlayer
 vectorlayer
 -----------
 
+.. tip::            
+    To visually edit symbols for vector datasets display, please use the `Symbol Editor <https://geolayer.azurewebsites.net>`_ described in chapter :ref:`symbol-editor-help`.
+
+
 .. automodule:: vectorlayer
     :members:
     :member-order: bysource
-
-.. tip::            
-    To visually edit symbols, please use the `Symbol Editor <https://geolayer.azurewebsites.net>`_ described in chapter :ref:`symbol-editor-help`.

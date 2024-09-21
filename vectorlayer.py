@@ -41,7 +41,6 @@ class vectorlayer:
     
     See the chapter :ref:`symbol-format-help` for a guide on how symbols are defined and the chapter :ref:`symbol-editor-help` for help on the visual Symbol Editor.
 
-
     """
     
     # Initialization for vector files (shapefiles, geopackage, etc.)
