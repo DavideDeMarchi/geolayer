@@ -548,8 +548,10 @@ def symbol2Image(symbol=[], size=1, feature='Point', clipdimension=999, showbord
             display(img)
             
             
-.. image:: ./figures/PillowImage.png
-    :width: 100px
+        .. figure:: figures/PillowImage.png
+            :width: 100px
+        
+        Image created by the example code
     
     """
     pass
