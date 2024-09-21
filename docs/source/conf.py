@@ -42,7 +42,12 @@ templates_path = ['_templates']
 
 html_theme = 'sphinx_rtd_theme'
 
-html_logo = 'figures/geolayer_black_white_400.png'
+html_logo = 'figures/geolayer_white_400.png'
+
+# The name of the Pygments (syntax highlighting) style to use.
+pygments_style = 'sphinx'
+
+numfig = True
 
 # -- Options for EPUB output
 epub_show_urls = 'footnote'

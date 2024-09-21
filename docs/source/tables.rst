@@ -1,4 +1,4 @@
-.. image:: figures/vois_horizontal_small.png
+.. image:: figures/geolayer_black_white_400.png
 
 |
 
