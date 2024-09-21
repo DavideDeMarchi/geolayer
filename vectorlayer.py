@@ -530,7 +530,7 @@ def symbol2Image(symbol=[], size=1, feature='Point', clipdimension=999, showbord
         
         # Import libraries
         from IPython.display import display
-        from geolayer import vectorlayer
+        from geolayer.vectorlayer import symbol2Image
             
         symbol = [
                     [
@@ -542,16 +542,16 @@ def symbol2Image(symbol=[], size=1, feature='Point', clipdimension=999, showbord
         ]
             
         # Create the image
-        img = vectorlayer.symbol2Image(symbol, feature='Polygon',
-                                       size=2, showborder=True)
+        img = symbol2Image(symbol, feature='Polygon', size=2, showborder=True)
             
         # Display the image
         display(img)
             
             
     .. image:: figures/PillowImage.png
+        :width: 100px
         
-    Image created by the example code
+    Image created by the example code above to convert a polygonal symbol to a Pillow image
     
     """
     pass
