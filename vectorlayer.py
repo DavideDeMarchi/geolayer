@@ -222,6 +222,7 @@ class vectorlayer:
 .. tip::
         Always pass a valid extents string, since this will make the display much faster in most cases.
         
+        
         Example
         -------
         Display of a POSTGIS query::
@@ -272,6 +273,7 @@ class vectorlayer:
             # Display the map
             display(m)
             
+            
 .. tip::
         To visually edit symbols, please use the `Symbol Editor <https://geolayer.azurewebsites.net>`_ described in chapter :ref:`symbol-editor-help`.
         """
@@ -286,7 +288,7 @@ class vectorlayer:
     def symbologyClear(self, maxstyle=0):
         """
         Remove all the default symbology for a vectorlayer instance and all the symbols eventually added.
-        By default a vectorlayer instance has a default symbology (for instance a pale yellow for polygons) so that it can be displayed even if no symbology is added using the :py:method:`vectorlayer.symbologyAdd`.
+        By default a vectorlayer instance has a default symbology (for instance a pale yellow for polygons) so that it can be displayed even if no symbology is added using the :py:meth:`~vectorlayer.symbologyAdd`.
         By calling symbologyClean method, all these default display settings are removed.
         
         Parameters
