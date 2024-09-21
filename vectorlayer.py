@@ -58,7 +58,7 @@ class vectorlayer:
         Parameters
         ----------
         filepath : str
-            File path of the vector dataset to display (shapefile, geopackage, etc.)
+            File path of the vector dataset to display (shapefile, geopackage, etc.).
         layer : str, optional
             Name of the layer to display (for a shapefile it can be empty). Default is ''.
         epsg : int, optional
@@ -125,9 +125,9 @@ class vectorlayer:
         Parameters
         ----------
         wktlist : list of str
-            List of strings in WKT format containing the geometry of features to display (see: `Well Known Text format <https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry>`_)
+            List of strings in WKT format containing the geometry of features to display (see: `Well Known Text format <https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry>`_).
         properties : list of dict, optional
-            List of dict containing attributes of the features (default is [])
+            List of dict containing attributes of the features (default is []).
             
         Example
         -------
@@ -316,17 +316,17 @@ class vectorlayer:
     @staticmethod
     def symbolChange(symbol, color='#ff0000', fillColor='#ff0000', fillOpacity=1.0, strokeColor='#ffff00', strokeWidth=0.5, scalemin=None, scalemax=None):
         """
-        Change color and other properties of a *parametric* (i.e. generic) symbol and returns the modified symbol
+        Change color and other properties of a *parametric* (i.e. generic) symbol and returns the modified symbol.
         
-        These tags can be used inside a symbol definition for creating a *parametric* symbol that can then be instantiated using this function: 
+        These tags can be used inside a symbol definition for creating a *parametric* symbol that can then be instantiated using these substitutions: 
         
-        - 'COLOR' (parameter :py:arg:`~vectorlayer.symbolChange.color`)
-        - 'FILL-COLOR' (parameter :py:arg:`~vectorlayer.symbolChange.fillColor`)
-        - 'FILL-OPACITY' (parameter :py:arg:`~vectorlayer.symbolChange.fillOpacity`)
-        - 'STROKE-COLOR' (parameter :py:arg:`~vectorlayer.symbolChange.strokeColor`)
-        - 'STROKE-WIDTH' (parameter :py:arg:`~vectorlayer.symbolChange.strokeWidth`)
-        - 'SCALE-MIN' (parameter :py:arg:`~vectorlayer.symbolChange.scalemin`)
-        - 'SCALE-MAX' (parameter :py:arg:`~vectorlayer.symbolChange.scalemax`)
+        - COLOR (parameter color)
+        - FILL-COLOR (parameter fillColor)
+        - FILL-OPACITY (parameter fillOpacity)
+        - STROKE-COLOR (parameter strokeColor)
+        - STROKE-WIDTH (parameter strokeWidth)
+        - SCALE-MIN (parameter scalemin)
+        - SCALE-MAX (parameter scalemax)
 
         
         Parameters
@@ -334,20 +334,26 @@ class vectorlayer:
         symbol: list of lists, optional
             Symbol to be used for the rendering of the features. See the chapter :ref:`symbol-format-help` for a guide on how symbols are defined and the chapter :ref:`symbol-editor-help` for help on the visual Symbol Editor.
         color : str, optional
-            Color to be substituted to the tag 'COLOR' (default is '#ff0000')
+            Color to be substituted to the tag COLOR (default is '#ff0000').
         fillColor : str, optional
-            Color to be substituted to the tag 'FILL-COLOR' (default is '#ff0000')
+            Color to be substituted to the tag FILL-COLOR (default is '#ff0000').
         fillOpacity : float, optional
-            Opacity value in [0,1] range to be substituted to the tag 'FILL-OPACITY' (default is 1.0)
+            Opacity value in [0,1] range to be substituted to the tag FILL-OPACITY (default is 1.0).
         strokeColor : str, optional
-            Color to be substituted to the tag 'STROKE-COLOR' (default is '#ffff00')
+            Color to be substituted to the tag STROKE-COLOR (default is '#ffff00').
         strokeWidth : float, optional
-            Width of the stroke in pixels to be substituted to the tag 'STROKE-WIDTH' (default is 0.5)
+            Width of the stroke in pixels to be substituted to the tag STROKE-WIDTH (default is 0.5).
         scalemin : float, optional
-            Minimum scale denominator to be substituted to the tag 'SCALE-MIN' to limit the zoom levels for which the symbol is visible (default is None)
+            Minimum scale denominator to be substituted to the tag SCALE-MIN to limit the zoom levels for which the symbol is visible (default is None).
         scalemax : float, optional
-            Maximum scale denominator to be substituted to the tag 'SCALE-MAX' to limit the zoom levels for which the symbol is visible (default is None)
+            Maximum scale denominator to be substituted to the tag SCALE-MAX to limit the zoom levels for which the symbol is visible (default is None).
 
+        Returns
+        --------
+        modified_symbol : list of lists
+            The input symbol modified by substituting the tags with the input parameter values.
+            
+            
         Example
         -------
         Create and instantiate a *parametric* symbol::
@@ -355,7 +361,7 @@ class vectorlayer:
             # Import libraries
             from geolayer import vectorlayer
 
-            # Define a *parametric* symbol ('FILL-COLOR' to be substituted with the actual color)
+            # Define a parametric symbol (FILL-COLOR to be substituted with the actual color)
             symbol = [
                         [
                            ["PolygonSymbolizer", "fill", 'FILL-COLOR'],
@@ -365,7 +371,7 @@ class vectorlayer:
                         ]
             ]
 
-            # Instantiate the *parametric* symbol by substituting the FILL-COLOR tag with 'red'
+            # Instantiate the parametric symbol by substituting the FILL-COLOR tag with 'red'
             symbol_modified = vectorlayer.symbolChange(symbol, fillColor='red')
         """
         pass
@@ -383,7 +389,7 @@ class vectorlayer:
     # Print info on instance    
     def print(self):
         """
-        Print class description
+        Prints a textual description of the class instance.
         """
         pass
 
@@ -394,6 +400,24 @@ class vectorlayer:
     
     # Identify: returns a string
     def identify(self, lon, lat, zoom):
+        """
+        Given in input a geographic coordinate  and a zoom level, returns a string containing info on the attributes of the feature under the (lat,lon) position.
+
+        
+        Parameters
+        ----------
+        lon: float
+            Longitude coordinate of the point for which to perform the identify operation.
+        lat: float
+            Latitude coordinate of the point for which to perform the identify operation.
+        zoom: int
+            Zoom level in [0,20] to use for the identify operation.
+        
+        Returns
+        --------
+        res : str
+            The string containing the attribute names and values of the identofied feature.
+        """
         pass
         
 
