@@ -41,7 +41,7 @@ class vectorlayer:
     
     See the chapter :ref:`symbol-format-help` for a guide on how symbols are defined and the chapter :ref:`symbol-editor-help` for help on the visual Symbol Editor.
 
-    .. image:: figures/line.png
+
     """
     
     # Initialization for vector files (shapefiles, geopackage, etc.)
@@ -120,9 +120,6 @@ class vectorlayer:
             
             # Display the map
             display(m)
-            
-
-.. image:: figures/line.png
         """
     
     
@@ -183,9 +180,6 @@ class vectorlayer:
             
             # Display the map
             display(m)
-            
-            
-.. image:: figures/line.png
         """
     
     
@@ -288,9 +282,6 @@ class vectorlayer:
             
             # Display the map
             display(m)
-            
-            
-.. image:: figures/line.png
         """
         pass
 
@@ -351,7 +342,7 @@ class vectorlayer:
         
         Parameters
         ----------
-        symbol: list of lists, optional
+        symbol : list of lists, optional
             Symbol to be used for the rendering of the features. See the chapter :ref:`symbol-format-help` for a guide on how symbols are defined and the chapter :ref:`symbol-editor-help` for help on the visual Symbol Editor.
         color : str, optional
             Color to be substituted to the tag COLOR (default is '#ff0000').
@@ -426,11 +417,11 @@ class vectorlayer:
         
         Parameters
         ----------
-        lon: float
+        lon : float
             Longitude coordinate of the point for which to perform the identify operation.
-        lat: float
+        lat : float
             Latitude coordinate of the point for which to perform the identify operation.
-        zoom: int
+        zoom : int
             Zoom level in [0,20] to use for the identify operation.
         
         Returns
@@ -480,6 +471,35 @@ class vectorlayer:
     
     # Returns an instance of ipyleaflet.TileLayer
     def tileLayer(self, max_zoom=22):
+        """
+        Creates an ipyleaflet.TileLayer object from an instance of vectorlayer, to be added to a Map for display.
+        
+        Returns
+        --------
+        tlayer : ipyleaflet.TileLayer
+            Instance of ipyleaflet.TileLayer to be added to a Map
+
+        Example
+        -------
+        Create an ipyleaflet.TileLayer instance::
+        
+            # Import libraries
+            from IPython.display import display
+            import ipyleaflet
+            from geolayer import vectorlayer
+
+            # Create a vectorlayer instance
+            vlayer = vectorlayer.file(...)
+            
+            # Create an ipyleaflet Map
+            m = ipyleaflet.Map()
+            
+            # Add the layer to the map
+            m.add(vlayer.tileLayer())
+            
+            # Display the map
+            display(m)
+        """
         pass
 
     
@@ -488,5 +508,49 @@ class vectorlayer:
 # Generate an image from a symbol
 #####################################################################################################################################################
 def symbol2Image(symbol=[], size=1, feature='Point', clipdimension=999, showborder=False):
+    """
+    Convert a symbol into a Pillow image (to be used in legends, etc.).
+
+    Parameters
+    ----------
+    symbol : list of lists, optional
+        Symbol to convert into a Pillow image. See the chapter :ref:`symbol-format-help` for a guide on how symbols are defined and the chapter :ref:`symbol-editor-help` for help on the visual Symbol Editor.
+    size : int, optional
+        Size of the image to create, in the range [1,3] for "small" (30x30 pixels), "medium" (80x80 pixels) and "big" (256x256 pixels) dimensions. Default is 1.
+    feature : str, optional
+        Type of feature to display: Polygon, Point or Polyline (default is 'Point').
+    clipdimension : int, optional
+        Optional dimension of the square in pixel to be used to clip the output image to a smaller dimension (default is 999).
+    showborder : bool, optional
+        If True a thin border is added to the image (default is False).
+        
+        Example
+        -------
+        Create a Pillow image from a symbol::
+        
+            # Import libraries
+            from IPython.display import display
+            from geolayer import vectorlayer
+            
+            symbol = [
+                        [
+                           ["PolygonSymbolizer", "fill", 'yellow'],
+                           ["PolygonSymbolizer", "fill-opacity", 0.2],
+                           ["LineSymbolizer", "stroke", "#00ff00"],
+                           ["LineSymbolizer", "stroke-width", 4.0]
+                        ]
+            ]
+            
+            # Create the image
+            img = vectorlayer.symbol2Image(symbol, feature='Polygon', size=2, showborder=True)
+            
+            # Display the image
+            display(img)
+            
+            
+.. image:: ./figures/PillowImage.png
+    :width: 100px
+    
+    """
     pass
     
