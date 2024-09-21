@@ -28,9 +28,5 @@ vectorlayer
 .. automodule:: vectorlayer
     :members:
 
-        
-.. tip::
-    Always pass a valid extents string, since this will make the display much faster in most cases.
-
 .. tip::            
     To visually edit symbols, please use the `Symbol Editor <https://geolayer.azurewebsites.net>`_ described in chapter :ref:`symbol-editor-help`.

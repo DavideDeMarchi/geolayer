@@ -214,6 +214,14 @@ class vectorlayer:
         extents : str, optional
             Maximum extent of the geometries in the format "xmin ymin, xmax ymax"; if omitted, the extents will be determined by querying the metadata for the table. 
         
+        
+        
+.. tip::
+    Always pass a valid extents string, since this will make the display much faster in most cases.
+
+
+
+
         Example
         -------
         Display of a POSTGIS query::
