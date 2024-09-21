@@ -31,6 +31,15 @@ class vectorlayer:
     - :py:meth:`~vectorlayer.file`
     - :py:meth:`~vectorlayer.wkt`
     - :py:meth:`~vectorlayer.postgis`
+    
+    To apply symbology to a vectorlayer class, these methods can be used:
+    
+    - :py:meth:`~vectorlayer.symbologyClear`
+    - :py:meth:`~vectorlayer.symbologyAdd`
+    
+    A *parametric* symbol can be defined using tags like FILL-COLOR, STROKE-WIDTH, etc. that can be substituted with real values using the static method :py:meth:`~vectorlayer.symbolChange`.
+    
+    See the chapter :ref:`symbol-format-help` for a guide on how symbols are defined and the chapter :ref:`symbol-editor-help` for help on the visual Symbol Editor.
     """
     
     # Initialization for vector files (shapefiles, geopackage, etc.)
@@ -416,7 +425,7 @@ class vectorlayer:
         Returns
         --------
         res : str
-            The string containing the attribute names and values of the identofied feature.
+            The string containing the attribute names and values of the identified feature.
         """
         pass
         
