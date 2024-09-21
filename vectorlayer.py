@@ -217,7 +217,8 @@ class vectorlayer:
         geometry_table : str, optional
             Name of table geometry is retrieved from. Auto detected when not given, but this may fail for complex queries. Default is ''.
         extents : str, optional
-            Maximum extent of the geometries in the format "xmin ymin, xmax ymax"; if omitted, the extents will be determined by querying the metadata for the table. 
+            Maximum extent of the geometries in the format "xmin ymin, xmax ymax"; if omitted, the extents will be determined by querying the metadata for the table.
+            
             **Important!**: always pass a valid extents string, since this will make the display much faster in most cases.
 
 
@@ -303,10 +304,10 @@ class vectorlayer:
         ----------
         rule : str, optional
             Filter to define the feature that will be rendered with the symbol.
-            Passing 'all' applies the symbol to all the features, while a filter like "[attrib] = 'value'" make the symbol applied only to a subset of the features.
+            Passing 'all' applies the symbol to all the features, while a filter like "[attrib] = 'value'" makes the symbol applied only to a subset of the features.
             See `Mapnik Filter Syntax <https://github.com/mapnik/mapnik/wiki/Filter>`_ for help in writing the filter. Default is 'all'.
         symbol: list of lists, optional
-            Symbol to be used for the rendering of the features. See the :ref:`symbol-format-help` for a guide on ho symbols are defined.
+            Symbol to be used for the rendering of the features. See the :ref:`symbol-format-help` for a guide on how symbols are defined.
         """
         pass
                 

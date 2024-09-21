@@ -33,12 +33,12 @@ Various display modes are possible:
     
 
 
+.. _symbol-format-help:
+
 Display vector datasets
 -----------------------
 
 To display a vector dataset, the :py:class:`vectorlayer` class can be used.
-
-.. _symbol-format-help:
 
 .. note::
 
