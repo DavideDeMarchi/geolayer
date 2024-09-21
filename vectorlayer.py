@@ -90,7 +90,8 @@ class vectorlayer:
             vlayer.symbologyAdd(symbol=vectorlayer.symbolChange(symbol, fillColor='red'))
             
             # Assign a green symbol to a subset of the features
-            vlayer.symbologyAdd(rule="[CNTR_CODE] = 'IT'", symbol=vectorlayer.symbolChange(symbol, fillColor='#00aa00'))
+            vlayer.symbologyAdd(rule="[CNTR_CODE] = 'IT'",
+                                symbol=vectorlayer.symbolChange(symbol, fillColor='#00aa00'))
 
             # Create a Map
             m = Map.Map()
@@ -103,9 +104,6 @@ class vectorlayer:
             
             # Display the map
             display(m)
-
-.. tip::            
-        To visually edit symbols, please use the `Symbol Editor <https://geolayer.azurewebsites.net>`_ described in chapter :ref:`symbol-editor-help`.
         """
     
     
@@ -166,9 +164,6 @@ class vectorlayer:
             
             # Display the map
             display(m)
-            
-.. tip::            
-        To visually edit symbols, please use the `Symbol Editor <https://geolayer.azurewebsites.net>`_ described in chapter :ref:`symbol-editor-help`.
         """
     
     
@@ -219,10 +214,6 @@ class vectorlayer:
         extents : str, optional
             Maximum extent of the geometries in the format "xmin ymin, xmax ymax"; if omitted, the extents will be determined by querying the metadata for the table. 
         
-.. tip::
-        Always pass a valid extents string, since this will make the display much faster in most cases.
-        
-        
         Example
         -------
         Display of a POSTGIS query::
@@ -272,10 +263,6 @@ class vectorlayer:
             
             # Display the map
             display(m)
-            
-            
-.. tip::
-        To visually edit symbols, please use the `Symbol Editor <https://geolayer.azurewebsites.net>`_ described in chapter :ref:`symbol-editor-help`.
         """
         pass
 
@@ -302,6 +289,18 @@ class vectorlayer:
             
     # Apply a symbol to a subset of the features filtered by a rule ('all' applies to all features, "[attrib] = 'value'" only to a subset of the features. See https://github.com/mapnik/mapnik/wiki/Filter for filter sintax)
     def symbologyAdd(self, rule='all', symbol=[]):
+        """
+        Add a new symbology rule.
+        
+        Parameters
+        ----------
+        rule : str, optional
+            Filter to define the feature that will be rendered with the symbol.
+            Passing 'all' applies the symbol to all the features, while a filter like "[attrib] = 'value'" make the symbol applied only to a subset of the features.
+            See `Mapnik Filter Syntax <https://github.com/mapnik/mapnik/wiki/Filter>`_ for help in writing the filter. Default is 'all'.
+        symbol: list of lists, optional
+            Symbol to be used for the rendering of the features. See the :ref:`symbol-format-help` for a guide on ho symbols are defined.
+        """
         pass
                 
     
