@@ -25,7 +25,7 @@
 #####################################################################################################################################################
 class vectorlayer:
     """
-    Vector datasets visualization
+    Vector datasets visualization. It can display vector file datasets (shapefiles, geopackage, etc.), WKT strings (see: `Well Known Text format <https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry>`_) and POSTGIS geospatial tables and queries.
     """
     
     # Initialization for vector files (shapefiles, geopackage, etc.)
@@ -36,6 +36,7 @@ class vectorlayer:
                  proj='',              # To be used for projections that do not have an EPSG code (if not empty it is used instead of the passed epsg)
                  identify_fields=[]):  # List of names of field to display on identify operation
         pass
+        
         
     #####################################################################################################################################################
     # Initialization for a vector file (shapefile, geopackage, etc.)
@@ -136,7 +137,7 @@ class vectorlayer:
 
             # Create a vectorlayer instance from a WKT string
             vlayer = vectorlayer.wkt(['POLYGON ((20 40, 0 45, 10 52, 30 52, 20 40))'], 
-                                     [{"ndx": 22, "value": 12.8798, "units": "abcd", "type": "type1"}])
+                                     [{"ndx": 22, "value": 12.8798, "units": "abcd"}])
 
             # Define a symbol
             symbol = [
@@ -184,10 +185,96 @@ class vectorlayer:
                 query,
                 epsg=4326,
                 proj='',             # To be used for projections that do not have an EPSG code (if not empty it is used instead of the passed epsg)
-                geomtype='polygon',
+                geomtype='Polygon',
                 geometry_field='',
                 geometry_table='',
                 extents=''):
+        """
+        Display of a POSTGIS geospatial query over an ipyleaflet Map.
+        
+        Parameters
+        ----------
+        host : str
+            Address for the POSTGIS server. You can use an IP address or the hostname of the machine on which database server is running.
+        port : int
+            Port on which you have configured your POSTGIS instance while installing or initializing. The default port is 5432.
+        dbname: str
+            The name of the database with which you want to connect. The default name of the database is the same as that of the user.
+        user : str
+            User name to be used for the connection to the POSTGIS database.
+        password : str
+            Password for the user name.
+        query : str
+            Query in SQL format to extract information from the DB. It should include a geoemtry field.
+        epsg : int, optional
+            EPSG code of the coordinate system to use (default is 4326, the geographical coordinates).
+        proj : str, optional
+            Proj4 string of the coordinate system to use (default is the empty string). If a non-empty string is passed, the proj parameter has prevalence over the epsg code.
+        geomtype : str, optional
+            Geometry type of the features returned by the query. In can be 'Polygon', 'LineString' or 'Point'. Default is 'Polygon'.
+        geometry_field : str, optional
+            Name of the geometry field, in case you have more than one in a single table. This field will be deduced from the query in most cases, but may need to be manually specified in some cases. Default is ''.
+        geometry_table : str, optional
+            Name of table geometry is retrieved from. Auto detected when not given, but this may fail for complex queries. Default is ''.
+        extents : str, optional
+            Maximum extent of the geometries in the format "xmin ymin, xmax ymax"; if omitted, the extents will be determined by querying the metadata for the table. 
+        
+.. tip::
+        Always pass a valid extents string, since this will make the display much faster in most cases.
+        
+        Example
+        -------
+        Display of a POSTGIS query::
+        
+            # Import libraries
+            from IPython.display import display
+            from vois.geo import Map
+            from geolayer import vectorlayer
+
+            # Create a vectorlayer instance for a POSTGIS query
+            vlayer = vectorlayer.postgis(
+                        host="XXXXXX",
+                        port=5432,
+                        dbname="XXXXXX",
+                        user="XXXXXX",
+                        password="XXXXXX",
+                        query="SELECT geom FROM mytable",
+                        epsg=3035,
+                        geomtype="Polygon",
+                        extents="4200207.5 3496795.9,4649995.8 3848272.9")
+
+            # Define a symbol
+            symbol = [
+                        [
+                           ["PolygonSymbolizer", "fill", '#ff0000'],
+                           ["PolygonSymbolizer", "fill-opacity", 0.3],
+                           ["LineSymbolizer", "stroke", "#000000"],
+                           ["LineSymbolizer", "stroke-width", 1.0]
+                        ]
+            ]
+
+            # Remove default symbology
+            vlayer.symbologyClear()
+            
+            # Assign the symbol to all the features of the query
+            vlayer.symbologyAdd(symbol=symbol)
+            
+            # Create a Map
+            m = Map.Map()
+            
+            # Add the layer to the map
+            m.addLayer(vlayer)
+            
+            # Set the identify operation
+            m.onclick = vlayer.onclick
+            vlayer.identify_fields = ['FID', 'GEOMETRY']
+            
+            # Display the map
+            display(m)
+            
+.. tip::
+        To visually edit symbols, please use the `Symbol Editor <https://geolayer.azurewebsites.net>`_ described in chapter :ref:`symbol-editor-help`.
+        """
         pass
 
     
@@ -195,9 +282,20 @@ class vectorlayer:
     # Symbology management
     #####################################################################################################################################################
     
-    # Remove all default symbology and all symbols added)
+    # Remove all default symbology and all symbols added
     def symbologyClear(self, maxstyle=0):
-        pass
+        """
+        Remove all the default symbology for a vectorlayer instance and all the symbols eventually added.
+        By default a vectorlayer instance has a default symbology (for instance a pale yellow for polygons) so that it can be displayed even if no symbology is added using the :py:method:`vectorlayer.symbologyAdd`.
+        By calling symbologyClean method, all these default display settings are removed.
+        
+        Parameters
+        ----------
+        maxstyle : int, optional
+            A symbol in geolayer can have a maximum of 10 layers (corresponding to the number of lists inside its definition. The first list will be mapped to style0, the second to style1, etc., up to style9).
+            This parameter can be used to clear only the first style (style0) if 0 is passed (default), or up to all the styles if 10 is passed.
+            If the symbols you use are only made of a single layer, call this function without specifying the maxstyle parameter, since the default value of 0 is sufficient to clean the symbology.
+        """
 
             
     # Apply a symbol to a subset of the features filtered by a rule ('all' applies to all features, "[attrib] = 'value'" only to a subset of the features. See https://github.com/mapnik/mapnik/wiki/Filter for filter sintax)
