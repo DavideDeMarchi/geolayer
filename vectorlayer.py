@@ -47,7 +47,7 @@ class vectorlayer:
              epsg=4326,
              proj=''):      # To be used for projections that do not have an EPSG code (if not empty it is used instead of the passed epsg)
         """
-        Display of a file-based vector dataset.
+        Display of a file-based vector dataset on an ipyleaflet Map.
         
         Parameters
         ----------
@@ -70,9 +70,9 @@ class vectorlayer:
             from geolayer import vectorlayer
 
             # Create a vectorlayer instance from a file dataset (shapefile)
-            vlayer = vectorlayer.file('.../NUTS_RG_03M_2021_4326_0.shp', epsg=4326, proj='+init=epsg:4326')
+            vlayer = vectorlayer.file('.../NUTS_RG_03M_2021_4326_0.shp', epsg=4326)
 
-            # Define a parametric symbol ('FILL-COLOR' to be substituted with actual color)
+            # Define a parametric symbol ('FILL-COLOR' to be substituted with the actual color)
             symbol = [
                         [
                            ["PolygonSymbolizer", "fill", 'FILL-COLOR'],
@@ -112,7 +112,57 @@ class vectorlayer:
     def wkt(cls,
             wktlist,          # List of strings containing WKT of geospatial features in EPSG4326
             properties=[]):   # List of dictionaries containing the attributes of each of the feature (optional)
-        pass
+        """
+        Display of one or more WKT (Well-Known-Text) strings as geospatial vector features over an ipyleaflet Map.
+        
+        Parameters
+        ----------
+        wktlist : list of str
+            List of strings in WKT format containing the geometry of features to display (see: `Well Known Text format <https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry>`_)
+        properties : list of dict, optional
+            List of dict containing attributes of the features (default is [])
+            
+        Example
+        -------
+        Display of a shapefile::
+        
+            # Import libraries
+            from IPython.display import display
+            from vois.geo import Map
+            from geolayer import vectorlayer
+
+            # Create a vectorlayer instance from a WKT string
+            vlayer = vectorlayer.wkt(['POLYGON ((20 40, 0 45, 10 52, 30 52, 20 40))'], 
+                                     [{"ndx": 22, "value": 12.8798, "units": "abcd", "type": "type1"}])
+
+            # Define a symbol (use the `Symbol Editor <https://geolayer.azurewebsites.net>`_ to visually edit it)
+            symbol = [
+                        [
+                           ["PolygonSymbolizer", "fill", '#0088ff'],
+                           ["PolygonSymbolizer", "fill-opacity", 0.8],
+                           ["LineSymbolizer", "stroke", "#000000"],
+                           ["LineSymbolizer", "stroke-width", 4.0]
+                        ]
+            ]
+
+            # Remove default symbology
+            vlayer.symbologyClear()
+            
+            # Assign a symbol to a subset of the features
+            vlayer.symbologyAdd(rule="[units] = 'abcd'", symbol=symbol)
+            
+            # Create a Map
+            m = Map.Map()
+            
+            # Add the layer to the map
+            m.addLayer(vlayer)
+            
+            # Set the identify operation
+            m.onclick = vlayer.onclick
+            
+            # Display the map
+            display(m)
+        """
     
     
     #####################################################################################################################################################
