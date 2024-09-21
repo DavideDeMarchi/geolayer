@@ -102,6 +102,8 @@ class vectorlayer:
             
             # Display the map
             display(m)
+            
+        To visually edit symbols, please use the `Symbol Editor <https://geolayer.azurewebsites.net>`_
         """
     
     
@@ -124,7 +126,7 @@ class vectorlayer:
             
         Example
         -------
-        Display of a shapefile::
+        Display of a WKT string::
         
             # Import libraries
             from IPython.display import display
@@ -135,7 +137,7 @@ class vectorlayer:
             vlayer = vectorlayer.wkt(['POLYGON ((20 40, 0 45, 10 52, 30 52, 20 40))'], 
                                      [{"ndx": 22, "value": 12.8798, "units": "abcd", "type": "type1"}])
 
-            # Define a symbol (use the `Symbol Editor <https://geolayer.azurewebsites.net>`_ to visually edit it)
+            # Define a symbol
             symbol = [
                         [
                            ["PolygonSymbolizer", "fill", '#0088ff'],
@@ -162,6 +164,8 @@ class vectorlayer:
             
             # Display the map
             display(m)
+            
+        To visually edit symbols, please use the `Symbol Editor <https://geolayer.azurewebsites.net>`_
         """
     
     
