@@ -25,6 +25,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.intersphinx',
+    'sphinx.ext.napoleon',
     'sphinx_copybutton',
 ]
 
@@ -41,6 +42,7 @@ templates_path = ['_templates']
 
 html_theme = 'sphinx_rtd_theme'
 
+html_logo = 'figures/geolayer_black_white_400.png'
 
 # -- Options for EPUB output
 epub_show_urls = 'footnote'
