@@ -213,13 +213,7 @@ class vectorlayer:
             Name of table geometry is retrieved from. Auto detected when not given, but this may fail for complex queries. Default is ''.
         extents : str, optional
             Maximum extent of the geometries in the format "xmin ymin, xmax ymax"; if omitted, the extents will be determined by querying the metadata for the table. 
-        
-        
-        
-.. note::
-    Always pass a valid extents string, since this will make the display much faster in most cases.
-
-
+            **Important!**: always pass a valid extents string, since this will make the display much faster in most cases.
 
 
         Example
