@@ -102,6 +102,7 @@ To display a vector dataset, the :py:class:`vectorlayer` class can be used.
         vlayer.symbologyAdd(s)
 
 
+.. _symbol-editor-help:
 
 Create symbols for vector datasets
 ----------------------------------
