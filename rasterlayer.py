@@ -111,10 +111,11 @@ class rasterlayer:
             from geolayer import rasterlayer
 
             # Create a single rasterlayer istance to display the first band of a VRT file
-            ly = rasterlayer.single('.../Copernicus/Services/Land/Pan-European/SmallWoodyFeatures/SWF2018/VER1-0/Data/VRT/SWF_2018_005m_03035_V1_0.vrt', 
+            ly = rasterlayer.single('.../SWF2018/VER1-0/Data/VRT/SWF_2018_005m_03035_V1_0.vrt', 
                                     band=1, epsg=3035, nodata=0.0)
                                     
-            # Display all pixels having value 1 with a pale green color (see ... for a complete description)
+            # Display all pixels having value 1 with a pale green color
+            # (see :py:meth:`~rasterlayer.colorizer` and :py:meth:`~rasterlayer.color`for a complete description)
             ly.color(value=1.0, color="#cefc20", mode="exact")
 
             # Create a Map
@@ -242,7 +243,7 @@ class rasterlayer:
             
         Example
         -------
-        Display of band B04 of a Sentinel-2 L2A product::
+        Display of band B04 of a Sentinel-2 L2A product (using one of the `Plotly continuous color scales <https://plotly.com/python/builtin-colorscales/>`_)::
         
             # Import libraries
             from IPython.display import display
@@ -287,7 +288,52 @@ class rasterlayer:
                      scaling='near',
                      opacity=1.0):
         """
-        Display an RGB 3 bands composition of a Sentinel-2 product.
+        Display an RGB three bands composition of a Sentinel-2 L2A product. The input product can be selected by passing its Product ID string (i.e: 'S2A_MSIL2A_20230910T100601_N0509_R022_T32TQP_20230910T161500') or the dict returned by a call to the :py:meth:`~rasterlayer.sentinel2item` method.
+        
+        The assignment of colors to the pixel values is done by linearly mapping the range of pixel values [scalemin, scalemax] to the [0, 255] interval. If None is passed as parameters scalemin and scalemax, the statistics of the input bands are used to calculate the scaling parameters as [avg - 2*stddev, avg + 2*stddev] for each of the three input bands.
+        
+        Parameters
+        ----------
+        stacitem : str or dict, optional
+            Product ID string of the Sentinel-2 L2A product or the dict returned by a call to the :py:meth:`~rasterlayer.sentinel2item` method containing the product metadata.
+        bandR : str, optional
+            Band name of the band to display in the Red channel (default is 'B04').
+        bandG : str, optional
+            Band name of the band to display in the Green channel (default is 'B02').
+        bandB : str, optional
+            Band name of the band to display in the Blue channel (default is 'B02').
+        scalemin : float or list of 3 floats, optional
+            Minimum pixel value to define the range of pixel values mapped to the [0, 255] visualization range. If a single float values is passes, the same scalemin value is used for all the three input bands. As an alternative a list of three floats can be passed to specify distinct values for each of the bands. The default value is None, allowing for automatic calculation of input range from the three bands statistics.
+        scalemin : float or list of 3 floats, optional
+            Maximum pixel value to define the range of pixel values mapped to the [0, 255] visualization range.  If a single float values is passes, the same scalemax value is used for all the three input bands. As an alternative a list of three floats can be passed to specify distinct values for each of the bands. The default value is None, allowing for automatic calculation of input range from the three bands statistics.
+        scaling : str, optional
+            Scaling mode (one of 'near', 'fast', 'bilinear', 'bicubic', 'spline16', 'spline36', 'hanning', 'hamming', 'hermite', 'kaiser', 'quadric', 'catrom', 'gaussian', 'bessel', 'mitchell', 'sinc', 'lanczos', 'blackman'). Default is 'near'.
+        opacity : float, optional
+            Opacity value (from 0.0 to 1.0) to display raster with partial transparency (default is 1.0, fully opaque).
+            
+        Example
+        -------
+        Display of a True Color RGB composition (B04/B03/B02) of a Sentinel-2 L2A product (using the bands statistics to calculate the optimal scaling ranges)::
+        
+            # Import libraries
+            from IPython.display import display
+            from vois.geo import Map
+            from geolayer import rasterlayer
+
+            # Create a rasterlayer istance to display a single Sentinel-2 band
+            ly = rasterlayer.rgb('S2A_MSIL2A_20230910T100601_N0509_R022_T32TQP_20230910T161500')
+
+            # Create a Map
+            m = Map.Map(center=[43.696, 12.1179], zoom=9)
+            
+            # Add the layer to the map
+            m.addLayer(ly)
+            
+            # Set the identify operation
+            m.onclick = ly.onclick
+            
+            # Display the map
+            display(m)
         """
         pass
             
@@ -461,7 +507,7 @@ class rasterlayer:
     # Add a colorlist linearly scaled from a min to a max value
     def colorlist(self, scalemin, scalemax, colorlist):
         """
-        Add a series of colorizer stops, one for each item of a list of colors, so that the pixel values inside a range [scalemin, scalemax] are linearly assigned to the colors of the list.
+        Add a series of colorizer stops, one for each item of a list of colors, so that the pixel values inside a range [scalemin, scalemax] are linearly assigned to the colors of the list. Read the description of the method :py:meth:`~rasterlayer.colorizer` for an example.
 
         Parameters
         ----------
@@ -478,7 +524,7 @@ class rasterlayer:
     # Add a dictionary having key: raster values, value: colors
     def colormap(self, values2colors, mode='linear'):
         """
-        Add a series of colorizer stops from a dictionary that maps some pixel values to specific colors.
+        Add a series of colorizer stops from a dictionary that maps some pixel values to specific colors. Read the description of the method :py:meth:`~rasterlayer.colorizer` for an example.
 
         Parameters
         ----------
