@@ -299,6 +299,9 @@ class rasterlayer:
         """
         Initialize the raster rendering by providing settings for single-band display. The geolayer library uses Mapnik to render a raster dataset. See the  see `Raster Symbolizer description <https://github.com/mapnik/mapnik/wiki/RasterSymbolizer>`_ for info.
         
+        .. note::
+        After a rasterlayer instance is created, this method must be called only if a non-default setting is needed. In other words, if the created rasterlayer instance is going to be displayed using near-neighbour interpolation and fully opaque, the call to simbolizer() method can be avoided.
+        
         Parameters
         ----------
         scaling : str, optional
@@ -306,7 +309,7 @@ class rasterlayer:
         opacity : float, optional
             Opacity value (from 0.0 to 1.0) to display raster with partial transparency (default is 1.0, fully opaque)
         composition : str, optional
-            Compositing/Merging effects with image below raster level. Possible value are: grain_merge, grain_merge2, multiply, multiply2, divide, divide2, screen, hard_light. Default is ''.
+            Compositing/Merging effects with image below raster level. Possible values are: grain_merge, grain_merge2, multiply, multiply2, divide, divide2, screen, hard_light. Default is ''.
         """
         pass
         
@@ -317,7 +320,7 @@ class rasterlayer:
                   default_color="transparent",
                   epsilon=1.5e-07):
         """
-        Create a colorizer descriptor to define how the values of a single-band raster are transformed into colors. See the `Raster Colorizer help pages <https://github.com/mapnik/mapnik/wiki/RasterColorizer>`_ for more details.
+        Create a colorizer descriptor to define how the values of a single-band raster are transformed into colors. See the `Raster Colorizer help page <https://github.com/mapnik/mapnik/wiki/RasterColorizer>`_ for more details.
         
         The colorizer works in the following way:
 
@@ -341,31 +344,64 @@ class rasterlayer:
 
         **exact** causes an input value which matches the stops value to be translated to the stops color. The colorizers epsilon value can be used to make the match a bit fuzzy (in the 'greater than' direction).
 
-        The colorizer method sets the initial parameters of the Colorizer. To add one or more steps to the colorizer the following methods can be called:
+        The colorizer method sets the initial parameters of the Colorizer. To add one or more stops to the colorizer the following methods can be called:
         
         - :py:meth:`~rasterlayer.color`
         - :py:meth:`~rasterlayer.colorlist`
         - :py:meth:`~rasterlayer.colormap`
         
+        .. note::
+        After a rasterlayer instance is created, this method must be called only if a non-default setting is needed. In other words, if the created rasterlayer instance is going to be displayed using the "linear" mode and the "transparent" default color, the call to the colorizer() method can be avoided.
+        
         Parameters
         ----------
         default_mode : str, optional
-            Default colorizer mode that can be inherited by all subsequent stops in case the *inherit* mode is selected. Default is 'linear').
+            Default colorizer mode that can be inherited by all subsequent stops in case the *inherit* mode is selected. Default is 'linear'.
         default_color : str, optional
             Starting color of the first step of the colorizer. Default is 'transparent'.
         epsilon : float, optional
             Error threshold used in the exact mode to decide if a pixel value matches a stop value. Default is 1.5e-07.
+
+        Examples
+        --------
+        To visualize a raster mask band by assigning a color to the "valid" pixels::
+        
+            ly = rasterlayer.single('...', band=1, epsg=3035, nodata=0.0)
+            ly.color(value=1.0, color="#cefc20", mode="exact")
+            
+        To visualize a raster band by assigning a palette of colors to a range of pixel values::
+            
+            ly = rasterlayer.single('...', band=1, epsg=3035, nodata=0.0)
+            ly.colorlist(0.0, 100.0, ['#ff0000', '#0000ff'])
+
+        To visualize a raster band by using a mapping of pixel values to specific colors::
+            
+            ly = rasterlayer.single('...', band=1, epsg=3035, nodata=0.0)
+            ly.colormap({1.0: 'red', 
+                         2.0: '#ffff00',
+                         3.0: '#00ffff',
+                         4.0: '#0000ff',
+                         5.0: '#aaffaa'})
         """
         pass
 
     
-    # Add a colorizer step: see https://github.com/mapnik/mapnik/wiki/RasterColorizer#example-xml
+    # Add a colorizer stop: see https://github.com/mapnik/mapnik/wiki/RasterColorizer#example-xml
     def color(self,
               value,            # Numerical value
               color="red",      # name of color or "#rrggbb"
               mode="linear"):   # "discrete", "linear" or "exact"
         """
-        Add a colorizer step: see https://github.com/mapnik/mapnik/wiki/RasterColorizer#example-xml
+        Add a colorizer stop. Read the description of the method :py:meth:`~rasterlayer.colorizer` or open the `Raster Colorizer help page <https://github.com/mapnik/mapnik/wiki/RasterColorizer>`_ for more details.
+        
+        Parameters
+        ----------
+        value : float
+            Numerical value of the raster pixel at which the stop begins to be applied.
+        color : str, optional
+            Color assigned to the stop. If not specified, the colorizers default_color will be used. A name of color or its exadecimal representation '#rrggbb' can be used. Default is 'red'.
+        mode : str, optional
+            Stop mode: defines how the assignment of colors is implemented. Possible modes are 'discrete', 'exact' or 'linear' (default).
         """
         pass
 
