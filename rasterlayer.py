@@ -219,7 +219,56 @@ class rasterlayer:
                         scaling='near',
                         opacity=1.0):
         """
-        Display a single band Sentinel-2 product.
+        Display a single band of a Sentinel-2 L2A product. The input product can be selected by passing its Product ID string (i.e: 'S2A_MSIL2A_20230910T100601_N0509_R022_T32TQP_20230910T161500') or the dict returned by a call to the :py:meth:`~rasterlayer.sentinel2item` method.
+        
+        The assignment of a list of colors to the pixel values is done by linearly mapping the range of pixel values [scalemin, scalemax] to the color palette. If None is passed as parameters scalemin and scalemax, the statistics of the input band are used to calculate the scaling parameters as [avg - 2*stddev, avg + 2*stddev].
+        
+        Parameters
+        ----------
+        stacitem : str or dict, optional
+            Product ID string of the Sentinel-2 L2A product or the dict returned by a call to the :py:meth:`~rasterlayer.sentinel2item` method containing the product metadata.
+        band : str, optional
+            Band name of the band to display (default is 'B04').
+        scalemin : float, optional
+            Minimum pixel value to define the range of pixel values assigned to the list or colors. The default value is None.
+        scalemin : float, optional
+            Maximum pixel value to define the range of pixel values assigned to the list or colors. The default value is None.
+        colorlist : list of str, optional
+            List of strings defining the colors. Common names of colors can be used (i.e 'red') or their exadecimal RGB representation '#rrggbb'. The default colorlist is ['#000000','#ffffff'] which defines a shades of gray color ramp.
+        scaling : str, optional
+            Scaling mode (one of 'near', 'fast', 'bilinear', 'bicubic', 'spline16', 'spline36', 'hanning', 'hamming', 'hermite', 'kaiser', 'quadric', 'catrom', 'gaussian', 'bessel', 'mitchell', 'sinc', 'lanczos', 'blackman'). Default is 'near'.
+        opacity : float, optional
+            Opacity value (from 0.0 to 1.0) to display raster with partial transparency (default is 1.0, fully opaque).
+            
+        Example
+        -------
+        Display of band B04 of a Sentinel-2 L2A product::
+        
+            # Import libraries
+            from IPython.display import display
+            from vois.geo import Map
+            from geolayer import rasterlayer
+            import plotly.express as px
+
+            # Create a rasterlayer istance to display a single Sentinel-2 band
+            ly = rasterlayer.sentinel2single('S2A_MSIL2A_20230910T100601_N0509_R022_T32TQP_20230910T161500',
+                                             band='B04',
+                                             scaling='near',
+                                             scalemin=800,
+                                             scalemax=2800,
+                                             colorlist=px.colors.sequential.Viridis)
+
+            # Create a Map
+            m = Map.Map(center=[43.696, 12.1179], zoom=9)
+            
+            # Add the layer to the map
+            m.addLayer(ly)
+            
+            # Set the identify operation
+            m.onclick = ly.onclick
+            
+            # Display the map
+            display(m)
         """
         pass
     
@@ -264,9 +313,14 @@ class rasterlayer:
     
     # Query Sentinel2 BDAP STAC item if input is a string (i.e. 'S2A_MSIL2A_20230910T100601_N0509_R022_T32TQP_20230910T161500')
     @staticmethod
-    def sentinel2item(stacitem):
+    def sentinel2item(S2_L2A_Product_ID):
         """
-        Static method to retrieve a STAC item from BDAP.
+        Given in input a string containing the Product ID of a Sentinel-2 L2A producs (i.e: 'S2A_MSIL2A_20230910T100601_N0509_R022_T32TQP_20230910T161500'), this statis method of the rasterlayer class returns the full stacitem of the product (a dicti containing all the metadata information of the product.
+        
+        Parameters
+        ----------
+        S2_L2A_Product_ID : str
+            Product ID of a Sentinel-2 L2A product.
         """
         pass
     
@@ -299,7 +353,6 @@ class rasterlayer:
         """
         Initialize the raster rendering by providing settings for single-band display. The geolayer library uses Mapnik to render a raster dataset. See the  see `Raster Symbolizer description <https://github.com/mapnik/mapnik/wiki/RasterSymbolizer>`_ for info.
         
-        .. note::
         After a rasterlayer instance is created, this method must be called only if a non-default setting is needed. In other words, if the created rasterlayer instance is going to be displayed using near-neighbour interpolation and fully opaque, the call to simbolizer() method can be avoided.
         
         Parameters
@@ -307,7 +360,7 @@ class rasterlayer:
         scaling : str, optional
             Scaling mode (one of 'near', 'fast', 'bilinear', 'bicubic', 'spline16', 'spline36', 'hanning', 'hamming', 'hermite', 'kaiser', 'quadric', 'catrom', 'gaussian', 'bessel', 'mitchell', 'sinc', 'lanczos', 'blackman'). Default is 'near'.
         opacity : float, optional
-            Opacity value (from 0.0 to 1.0) to display raster with partial transparency (default is 1.0, fully opaque)
+            Opacity value (from 0.0 to 1.0) to display raster with partial transparency (default is 1.0, fully opaque).
         composition : str, optional
             Compositing/Merging effects with image below raster level. Possible values are: grain_merge, grain_merge2, multiply, multiply2, divide, divide2, screen, hard_light. Default is ''.
         """
@@ -350,7 +403,6 @@ class rasterlayer:
         - :py:meth:`~rasterlayer.colorlist`
         - :py:meth:`~rasterlayer.colormap`
         
-        .. note::
         After a rasterlayer instance is created, this method must be called only if a non-default setting is needed. In other words, if the created rasterlayer instance is going to be displayed using the "linear" mode and the "transparent" default color, the call to the colorizer() method can be avoided.
         
         Parameters
@@ -409,7 +461,16 @@ class rasterlayer:
     # Add a colorlist linearly scaled from a min to a max value
     def colorlist(self, scalemin, scalemax, colorlist):
         """
-        Add a colorlist linearly scaled from a min to a max value
+        Add a series of colorizer stops, one for each item of a list of colors, so that the pixel values inside a range [scalemin, scalemax] are linearly assigned to the colors of the list.
+
+        Parameters
+        ----------
+        scalemin : float
+            Minimum pixel value to define the range of pixel values assigned to the list or colors.
+        scalemin : float
+            Maximum pixel value to define the range of pixel values assigned to the list or colors.
+        colorlist : list of str
+            List of strings defining the colors. Common names of colors can be used (i.e 'red') or their exadecimal RGB representation '#rrggbb'.
         """
         pass
 
@@ -417,7 +478,14 @@ class rasterlayer:
     # Add a dictionary having key: raster values, value: colors
     def colormap(self, values2colors, mode='linear'):
         """
-        Add a dictionary having key: raster values, value: colors
+        Add a series of colorizer stops from a dictionary that maps some pixel values to specific colors.
+
+        Parameters
+        ----------
+        values2colors : dict
+            Dict with pixel values as keys and colors as values.
+        mode : str, optional
+            Stop mode: defines how the assignment of colors is implemented. Possible modes are 'discrete', 'exact' or 'linear' (default).
         """
         pass
 
