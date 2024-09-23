@@ -283,7 +283,7 @@ class rasterlayer:
     # Print info on instance    
     def print(self):
         """
-        Print class description.
+        Prints a textual description of the class instance.
         """
         pass
         
@@ -297,7 +297,16 @@ class rasterlayer:
                    opacity=1.0,
                    composition=""):
         """
-        Create a symbolizer: see https://github.com/mapnik/mapnik/wiki/RasterSymbolizer
+        Initialize the raster rendering by providing settings for single-band display. The geolayer library uses Mapnik to render a raster dataset. See the  see `Raster Symbolizer description <https://github.com/mapnik/mapnik/wiki/RasterSymbolizer>`_ for info.
+        
+        Parameters
+        ----------
+        scaling : str, optional
+            Scaling mode (one of 'near', 'fast', 'bilinear', 'bicubic', 'spline16', 'spline36', 'hanning', 'hamming', 'hermite', 'kaiser', 'quadric', 'catrom', 'gaussian', 'bessel', 'mitchell', 'sinc', 'lanczos', 'blackman'). Default is 'near'.
+        opacity : float, optional
+            Opacity value (from 0.0 to 1.0) to display raster with partial transparency (default is 1.0, fully opaque)
+        composition : str, optional
+            Compositing/Merging effects with image below raster level. Possible value are: grain_merge, grain_merge2, multiply, multiply2, divide, divide2, screen, hard_light. Default is ''.
         """
         pass
         
@@ -308,7 +317,44 @@ class rasterlayer:
                   default_color="transparent",
                   epsilon=1.5e-07):
         """
-        Create a colorizer: see https://github.com/mapnik/mapnik/wiki/RasterColorizer
+        Create a colorizer descriptor to define how the values of a single-band raster are transformed into colors. See the `Raster Colorizer help pages <https://github.com/mapnik/mapnik/wiki/RasterColorizer>`_ for more details.
+        
+        The colorizer works in the following way:
+
+        - It has an ordered list of *stops* that describe how to translate an input value to an output color.
+        - A stop has a value, which marks the stop as being applied to input values from its value, up until the next stops value.
+        - A stop has a mode, which says how the input value will be converted to a colour.
+        - A stop has a color
+        - The colorizer also has default color, which input values will be converted to if they don't match any stops.
+        - The colorizer also has a default mode, which can be inherited by the stops.
+        - The colorizer also has an epsilon value, which is used in the exact mode.
+        
+        **Modes**
+        
+        The available modes are *inherit*, *discrete*, *linear*, and *exact*.
+        
+        **inherit** is only valid for stops, and not the default colorizer mode. It means that the stop will inherit the mode of the containing colorizer.
+
+        **discrete** causes all input values from the stops value, up until the next stops value (or forever if this is the last stop) to be translated to the stops color.
+
+        **linear** causes all input values from the stops value, up until the next stops value to be translated to a color which is linearly interpolated between the two stops colors. If there is no next stop, then the discrete mode will be used.
+
+        **exact** causes an input value which matches the stops value to be translated to the stops color. The colorizers epsilon value can be used to make the match a bit fuzzy (in the 'greater than' direction).
+
+        The colorizer method sets the initial parameters of the Colorizer. To add one or more steps to the colorizer the following methods can be called:
+        
+        - :py:meth:`~rasterlayer.color`
+        - :py:meth:`~rasterlayer.colorlist`
+        - :py:meth:`~rasterlayer.colormap`
+        
+        Parameters
+        ----------
+        default_mode : str, optional
+            Default colorizer mode that can be inherited by all subsequent stops in case the *inherit* mode is selected. Default is 'linear').
+        default_color : str, optional
+            Starting color of the first step of the colorizer. Default is 'transparent'.
+        epsilon : float, optional
+            Error threshold used in the exact mode to decide if a pixel value matches a stop value. Default is 1.5e-07.
         """
         pass
 
