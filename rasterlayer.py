@@ -629,6 +629,21 @@ class rasterlayer:
 
     @property
     def identify_dict(self):
+        """
+        Get/Set the dictionary to be used in the identify operation (click on a pixel) to convert a numerical pixel value into a string description. It can be useful to display class names instead of numerical values when querying categorical raster bands (datasets where each integer value represents a class or category)
+        
+        Returns
+        --------
+        d : dict
+            Dictionary that assigns a string to each pixel value.
+
+        Example
+        -------
+        Programmatically change the identify dictionary::
+            
+            vlayer.identify_dict = {1: 'wheat', 2: 'maize'}
+            print(vlayer.identify_dict)
+        """
         pass
         
     @identify_dict.setter
@@ -638,6 +653,21 @@ class rasterlayer:
         
     @property
     def identify_integer(self):
+        """
+        Get/Set the flag that requests the identify operation (click on a pixel) to return an integer value.
+        
+        Returns
+        --------
+        flag : bool
+            True if the identify operation must return an integer value.
+
+        Example
+        -------
+        Programmatically change the identify integer flag::
+            
+            vlayer.identify_integer = True
+            print(vlayer.identify_integer)
+        """
         pass
         
     @identify_integer.setter
@@ -647,6 +677,21 @@ class rasterlayer:
         
     @property
     def identify_digits(self):
+        """
+        Get/Set the flag number of digits to use for the display of floating point values in an identify operation (click on a pixel).
+        
+        Returns
+        --------
+        n : int
+            Number of decimal digits to use for the display of floating point pixel values.
+
+        Example
+        -------
+        Programmatically change the identify_digits value::
+            
+            vlayer.identify_digits = 2
+            print(vlayer.identify_digits)
+        """
         pass
         
     @identify_digits.setter
@@ -656,6 +701,21 @@ class rasterlayer:
         
     @property
     def identify_label(self):
+        """
+        Get/Set the string to use in the display of an identify operation (click on a pixel).
+        
+        Returns
+        --------
+        label : str
+            Label to prepend to the pixel values displayed in an identify operation.
+
+        Example
+        -------
+        Programmatically change the identify_label value::
+            
+            vlayer.identify_label = 'Intensity value'
+            print(vlayer.identify_label)
+        """
         pass
         
     @identify_label.setter
