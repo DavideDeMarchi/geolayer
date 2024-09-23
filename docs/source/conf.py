@@ -10,7 +10,7 @@ html_show_sourcelink = False
 
 # -- Project information
 project = 'geolayer'
-copyright = 'Copyright © European Union 2024'
+copyright = 'European Union 2024'
 author = 'Davide De Marchi'
 
 release = '0.0.4'

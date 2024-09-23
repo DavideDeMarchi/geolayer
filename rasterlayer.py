@@ -299,7 +299,7 @@ class rasterlayer:
         bandR : str, optional
             Band name of the band to display in the Red channel (default is 'B04').
         bandG : str, optional
-            Band name of the band to display in the Green channel (default is 'B02').
+            Band name of the band to display in the Green channel (default is 'B03').
         bandB : str, optional
             Band name of the band to display in the Blue channel (default is 'B02').
         scalemin : float or list of 3 floats, optional
@@ -352,7 +352,57 @@ class rasterlayer:
                        scaling='near',
                        opacity=1.0):
         """
-        Display an index calculated from 2 bands (b1 - b2)/(b1 + b2) of a Sentinel-2 product.
+        Display an index calculated from 2 bands (b1 - b2)/(b1 + b2) of a Sentinel-2 L2A product. The input product can be selected by passing its Product ID string (i.e: 'S2A_MSIL2A_20230910T100601_N0509_R022_T32TQP_20230910T161500') or the dict returned by a call to the :py:meth:`~rasterlayer.sentinel2item` method. The index calculation returns pixel values in the range [-1, 1].
+        
+        The assignment of colors to the pixel values is done by linearly mapping the range of pixel values [scalemin, scalemax] to the color ramp.
+        
+        Parameters
+        ----------
+        stacitem : str or dict, optional
+            Product ID string of the Sentinel-2 L2A product or the dict returned by a call to the :py:meth:`~rasterlayer.sentinel2item` method containing the product metadata.
+        band1 : str, optional
+            Band name of the first band to use for the index calculation (default is 'B08').
+        band2 : str, optional
+            Band name of the second band to use for the index calculation (default is 'B04').
+        scalemin : float, optional
+            Minimum pixel value to define the range of pixel values mapped to the colorlist colors. Default is 0.0.
+        scalemin : float, optional
+            Maximum pixel value to define the range of pixel values mapped to the colorlist colors. Default is 0.75.
+        colorlist : list of str, optional
+            List of strings defining the colors. Common names of colors can be used (i.e 'red') or their exadecimal RGB representation '#rrggbb'. The default colorlist is a brown-to-green color ramp.
+        scaling : str, optional
+            Scaling mode (one of 'near', 'fast', 'bilinear', 'bicubic', 'spline16', 'spline36', 'hanning', 'hamming', 'hermite', 'kaiser', 'quadric', 'catrom', 'gaussian', 'bessel', 'mitchell', 'sinc', 'lanczos', 'blackman'). Default is 'near'.
+        opacity : float, optional
+            Opacity value (from 0.0 to 1.0) to display raster with partial transparency (default is 1.0, fully opaque).
+            
+        Example
+        -------
+        Display of an NDVI index (B08 - B04)/(B08 + B04) of a Sentinel-2 L2A product::
+        
+            # Import libraries
+            from IPython.display import display
+            from vois.geo import Map
+            from geolayer import rasterlayer
+
+            # Create a rasterlayer istance to display the NDVI index on a Sentinel-2 product
+            ly = rasterlayer.index('S2A_MSIL2A_20230910T100601_N0509_R022_T32TQP_20230910T161500',
+                                   band1='B08',
+                                   band2='B04',
+                                   scaling='near',
+                                   scalemin=0.0,
+                                   scalemax=0.6)
+
+            # Create a Map
+            m = Map.Map(center=[43.696, 12.1179], zoom=9)
+            
+            # Add the layer to the map
+            m.addLayer(ly)
+            
+            # Set the identify operation
+            m.onclick = ly.onclick
+            
+            # Display the map
+            display(m)
         """
         pass
     
@@ -361,12 +411,17 @@ class rasterlayer:
     @staticmethod
     def sentinel2item(S2_L2A_Product_ID):
         """
-        Given in input a string containing the Product ID of a Sentinel-2 L2A producs (i.e: 'S2A_MSIL2A_20230910T100601_N0509_R022_T32TQP_20230910T161500'), this statis method of the rasterlayer class returns the full stacitem of the product (a dicti containing all the metadata information of the product.
+        Given in input a string containing the Product ID of a Sentinel-2 L2A producs (i.e: 'S2A_MSIL2A_20230910T100601_N0509_R022_T32TQP_20230910T161500'), this static method of the rasterlayer class returns the full stacitem of the product (a dict containing all the metadata information of the product).
         
         Parameters
         ----------
         S2_L2A_Product_ID : str
             Product ID of a Sentinel-2 L2A product.
+        
+        Returns
+        --------
+        stacitem : dict
+            Dictionary containing all the metadata information on the Sentinel-2 product (bands, statistics, etc.).
         """
         pass
     
