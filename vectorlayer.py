@@ -541,7 +541,7 @@ class vectorlayer:
     #####################################################################################################################################################
     
     # Returns an Image containing all the items of a legend
-    def legend2Image(self, legend, size=1, clipdimension=LARGE_SYMBOLS_DIMENSION, width=300, fontweight=400, fontsize=9, textcolor="black"):
+    def legend2Image(self, legend, size=1, clipdimension=999, width=300, fontweight=400, fontsize=9, textcolor="black"):
         """
         Given as input a legend returned by a call to one of the methods: :py:meth:`~vectorlayer.legendSingle`, :py:meth:`~vectorlayer.legendCategories` or :py:meth:`~vectorlayer.legendGraduated`, this function returns an PILLOW image containing all the items of the legend.
         
