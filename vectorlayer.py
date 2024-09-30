@@ -451,7 +451,7 @@ class vectorlayer:
                          interpolate=True,
                          distinctValues=None):
         """
-        Create a legend containing one item for each distinct value of a field. In case of file-based datasets (shapefiles, geopackage, aqlite, etc.) or wkt datasets, given a fieldname, the distinct values of this field are retrieved by the method legendCategories itself. On the contrary, for a postgis vectorlayer instance, the distinctValue parameter must be passed containing the list of all the unique values of the field (it is responsibility of the user to retrieve this list using a call to the underlying DB).
+        Create a legend containing one item for each distinct value of a field. In case of file-based datasets (shapefiles, geopackage, aqlite, etc.) or wkt datasets, given a fieldname, the distinct values of this field are retrieved by the method legendCategories itself. On the contrary, for a postgis vectorlayer instance, the distinctValues parameter must be passed containing the list of all the unique values of the field (it is responsibility of the user to retrieve this list using a call to the underlying DB).
         
         Parameters
         ----------
