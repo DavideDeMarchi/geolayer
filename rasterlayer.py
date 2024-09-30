@@ -32,7 +32,7 @@ class rasterlayer:
     - :py:meth:`~rasterlayer.single`
     - :py:meth:`~rasterlayer.rgb`
     
-    For Sentinel-2 products, these class methods can be used:
+    For Sentinel-2 L2A products, these class methods can be used:
     
     - :py:meth:`~rasterlayer.sentinel2single`
     - :py:meth:`~rasterlayer.sentinel2rgb`
@@ -115,7 +115,7 @@ class rasterlayer:
                                     band=1, epsg=3035, nodata=0.0)
                                     
             # Display all pixels having value 1 with a pale green color
-            # (see :py:meth:`~rasterlayer.colorizer` and :py:meth:`~rasterlayer.color`for a complete description)
+            # (see colorizer() and color() for a complete description)
             ly.color(value=1.0, color="#cefc20", mode="exact")
 
             # Create a Map
@@ -320,8 +320,8 @@ class rasterlayer:
             from vois.geo import Map
             from geolayer import rasterlayer
 
-            # Create a rasterlayer istance to display a single Sentinel-2 band
-            ly = rasterlayer.rgb('S2A_MSIL2A_20230910T100601_N0509_R022_T32TQP_20230910T161500')
+            # Create a rasterlayer istance to display a RGB composition of a Sentinel-2 L2A product
+            ly = rasterlayer.sentinel2rgb('S2A_MSIL2A_20230910T100601_N0509_R022_T32TQP_20230910T161500')
 
             # Create a Map
             m = Map.Map(center=[43.696, 12.1179], zoom=9)
@@ -385,12 +385,12 @@ class rasterlayer:
             from geolayer import rasterlayer
 
             # Create a rasterlayer istance to display the NDVI index on a Sentinel-2 product
-            ly = rasterlayer.index('S2A_MSIL2A_20230910T100601_N0509_R022_T32TQP_20230910T161500',
-                                   band1='B08',
-                                   band2='B04',
-                                   scaling='near',
-                                   scalemin=0.0,
-                                   scalemax=0.6)
+            ly = rasterlayer.sentinel2index('S2A_MSIL2A_20230910T100601_N0509_R022_T32TQP_20230910T161500',
+                                            band1='B08',
+                                            band2='B04',
+                                            scaling='near',
+                                            scalemin=0.0,
+                                            scalemax=0.6)
 
             # Create a Map
             m = Map.Map(center=[43.696, 12.1179], zoom=9)

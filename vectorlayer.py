@@ -60,8 +60,8 @@ class vectorlayer:
     @classmethod
     def file(cls,
              filepath,      # Path to the file (shapefile or geopackage, etc...)
-             layer='',      # Name of the layer (for a shapefile leave it empty)
-             epsg=4326,
+             layer=None,      # Name of the layer (for a shapefile leave it empty)
+             epsg=None,     # If None is passed, the epsg is calculated
              proj=''):      # To be used for projections that do not have an EPSG code (if not empty it is used instead of the passed epsg)
         """
         Display of a file-based vector dataset on an ipyleaflet Map.
@@ -71,9 +71,9 @@ class vectorlayer:
         filepath : str
             File path of the vector dataset to display (shapefile, geopackage, etc.).
         layer : str, optional
-            Name of the layer to display (for a shapefile it can be empty). Default is ''.
+            Name of the layer to display (for a shapefile it can be None). Default is None.
         epsg : int, optional
-            EPSG code of the coordinate system to use (default is 4326, the geographical coordinates).
+            EPSG code of the coordinate system to use (default is None meaning that the geolayer library will try to understand the EPSG code itself).
         proj : str, optional
             Proj4 string of the coordinate system to use (default is the empty string). If a non-empty string is passed, the proj parameter has prevalence over the epsg code.
             
@@ -287,6 +287,104 @@ class vectorlayer:
 
     
     #####################################################################################################################################################
+    # Static methods to get list of layers of a file-based vector dataset or info on a layer
+    #####################################################################################################################################################
+
+    # Returns the list of layers of a file-based vector dataset
+    @staticmethod
+    def layers(filepath):
+        """
+        Returns the list of layers of a file-based vector dataset (shapefile, geopackage, sqlite, etc.).
+        
+        Parameters
+        ----------
+        filepath : str
+            Full path of the file-based dataset (shapefile, geopackage, sqlite, etc.).
+        """
+        pass
+
+    
+    # Returns info dictionary on a layer of a file-based vector dataset
+    @staticmethod
+    def layer(filepath, layer=None):
+        """
+        Returns a dictionary containing info on a layer of a file-based vector dataset (extent, feature type, feature count, epsg, etc.).
+        
+        Parameters
+        ----------
+        filepath : str
+            Full path of the file-based dataset (shapefile, geopackage, sqlite, etc.)
+        layer : str
+            Name of the layer. It is possible to pass None in case of a shapefile dataset.
+        """
+        pass
+    
+    
+    #####################################################################################################################################################
+    # Info on fields and their values (only for file and wkt)
+    #####################################################################################################################################################
+
+    # Returns a dictionary containing info on the fields of a layer of a Dataset
+    def fields(self):
+        """
+        Returns a dictionary containing info on the fields of a file-based vector dataset. Works only for a filebased or a wkt instance.
+        """
+        pass
+
+        
+    # Returns info on a field of a layer of a Dataset
+    def field(self, field):
+        """
+        Returns a dictionary containing info on a field of a file-based vector dataset. Works only for a filebased or a wkt instance.
+        
+        Parameters
+        ----------
+        field : str
+            Name of the field to query.
+        """
+        pass
+
+        
+    # Returns the list of all values of a field of a layer of a Dataset
+    def values(self, field):
+        """
+        Returns the list of all values of a field of a layer. Works only for a filebased or a wkt instance.
+        
+        Parameters
+        ----------
+        field : str
+            Name of the field to query.
+        """
+        pass
+
+    
+    # Returns a dictionary of all the distinct values of a field of a layer of a Dataset with their number of occurrencies
+    def distinct(self, field):
+        """
+        Returns a dictionary of all the distinct values of a field of a layer of a dataset with their number of occurrencies. Works only for a filebased or a wkt instance.
+        
+        Parameters
+        ----------
+        field : str
+            Name of the field to query.
+        """
+        pass
+
+        
+    # Returns a dictionary containing statistical information on a numeric field of a layer of a Dataset
+    def stats(self, field):
+        """
+        Returns a dictionary containing statistical information on a numeric field of a layer of a dataset. Works only for a filebased or a wkt instance.
+        
+        Parameters
+        ----------
+        field : str
+            Name of the field to query.
+        """
+        pass
+        
+        
+    #####################################################################################################################################################
     # Symbology management
     #####################################################################################################################################################
     
@@ -322,6 +420,10 @@ class vectorlayer:
         """
         pass
                 
+        
+    
+    # Legend methods
+        
     
     # Change color and other properties of a symbol and returns the modified symbol
     @staticmethod
