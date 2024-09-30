@@ -485,7 +485,28 @@ class vectorlayer:
                        ):
         """
         Create a legend on the graduated values of a numerical field. In case of file-based datasets (shapefiles, geopackage, aqlite, etc.) or wkt datasets, given a fieldname, the values of this field are retrieved by the method legendGraduated itself. On the contrary, for a postgis vectorlayer instance, the allValues parameter must be passed containing the list of all the values of the field (it is responsibility of the user to retrieve this list using a call to the underlying DB).
-        
+
+        See `mapclassify help <https://github.com/pysal/mapclassify>`_ for additional guidance.
+
+        Each of the different classification methods takes one or more input parameters:
+
+        'EqualInterval': classifier_param1 = the number of classes required
+
+        'BoxPlot': None
+
+        'NaturalBreaks': classifier_param1 = the number of classes required
+
+        'FisherJenksSampled':  classifier_param1 = the number of classes required, classifier_param1 = the percentage of values that should form the sample (standard value is 0.1)
+
+        'StdMean': classifier_param1 = a list containing the multiples of the standard deviation to add/subtract from the sample mean to define the bins (example [-2, -1, 1, 2]
+
+        'JenksCaspallForced':  classifier_param1 = the number of classes required
+
+        'HeadTailBreaks': None
+
+        'Quantiles':  classifier_param1 = the number of classes required
+
+
         Parameters
         ----------
         fieldname : str
@@ -498,27 +519,6 @@ class vectorlayer:
             Custom list of values to use for the creation of the legend. Default is None, meaning that, for filebased and wkt vectorlayer instances, the list of all the field values is autonomously retrieved. This parameter must be mandatory passed when the vectorlayer instance is a postgis dataset.
         classifier_name : str, optional
             Name of the classifier to use for generating the classes. Possible values are: 'EqualInterval', 'BoxPlot', 'NaturalBreaks', 'FisherJenksSampled', 'StdMean', 'JenksCaspallForced', 'HeadTailBreaks' and 'Quantiles'. Default value is 'Quantiles'. 
-            
-            See https://github.com/pysal/mapclassify for additional help.
-            
-            Each of the different classification methods takes one or more input parameters:
-
-            'EqualInterval': classifier_param1 = the number of classes required
-            
-            'BoxPlot': None
-            
-            'NaturalBreaks': classifier_param1 = the number of classes required
-
-            'FisherJenksSampled':  classifier_param1 = the number of classes required, classifier_param1 = the percentage of values that should form the sample (standard value is 0.1)
-            
-            'StdMean': classifier_param1 = a list containing the multiples of the standard deviation to add/subtract from the sample mean to define the bins (example [-2, -1, 1, 2]
-
-            'JenksCaspallForced':  classifier_param1 = the number of classes required
-            
-            'HeadTailBreaks': None
-            
-            'Quantiles':  classifier_param1 = the number of classes required
-
         classifier_param1 : float, optional
             First optional parameter of the classification method selected.
         classifier_param2 : float, optional
