@@ -422,12 +422,177 @@ class vectorlayer:
                 
         
     
-    # Legend methods
+    #####################################################################################################################################################
+    # Legend creation. A Legend is a list of dictionaries, each one repredenting an item of the legend, containing description, rule and symbol
+    #####################################################################################################################################################
+
+    # Create a legend using a single symbol for all the features
+    def legendSingle(self,
+                     symbol=[],
+                     description=''):
+        """
+        Create a legend that uses a single symbol for all the features.
         
+        Parameters
+        ----------
+        symbol: list of lists, optional
+            Symbol to be used for the rendering of the features. See the chapter :ref:`symbol-format-help` for a guide on how symbols are defined and the chapter :ref:`symbol-editor-help` for help on the visual Symbol Editor.
+        description : str, optional
+            Description of the unique item of the legend (default is '').
+        """
+        pass
+
+    
+    # Create a legend containing one item for each distinct value of a field
+    def legendCategories(self,
+                         fieldname,
+                         colorlist,
+                         symbol=[],
+                         interpolate=True,
+                         distinctValues=None):
+        """
+        Create a legend containing one item for each distinct value of a field. In case of file-based datasets (shapefiles, geopackage, aqlite, etc.) or wkt datasets, given a fieldname, the distinct values of this field are retrieved by the method legendCategories itself. On the contrary, for a postgis vectorlayer instance, the distinctValue parameter must be passed containing the list of all the unique values of the field (it is responsibility of the user to retrieve this list using a call to the underlying DB).
+        
+        Parameters
+        ----------
+        fieldname : str
+            Name of the field whose distinct values must be used.
+        colorlist : list of str
+            List of colors to be used for the creation of the legend. 
+        symbol: list of lists, optional
+            Symbol to be used for the rendering of the features. See the chapter :ref:`symbol-format-help` for a guide on how symbols are defined and the chapter :ref:`symbol-editor-help` for help on the visual Symbol Editor.
+        interpolate : bool, optional
+            If True, the colors assigned to the items of the legend are calculated by using linear interpolation on the list of colors (thus potentially generating also intermediate colors). If False, only the colors in the list are used. In this case, if the number of distinct values is greated than the number of colors in the list, some legend items will have repeated colors.
+        distinctValues : list, optional
+            Custom list of distinct values to use for the creation of the legend. Default is None, meaning that, for filebased and wkt vectorlayer instances, the list of distinct values is autonomously calculated. This parameter must be mandatory passed when the vectorlayer instance is a postgis dataset.
+        """
+        pass
+            
+    
+    # Create a legend on graduated values of a numerical field
+    def legendGraduated(self,
+                        fieldname,
+                        colorlist,
+                        symbol=[],
+                        allValues=None,                 # All the values of the input fieldname (in case of postgis instance)
+                        classifier_name='Quantiles',
+                        classifier_param1=5,
+                        classifier_param2=None,
+                        interpolate=True,
+                        markersize_min=1.0,             # Multiplier of markers/lines sizes to generate dimensionally graduated symbols
+                        markersize_max=1.0,
+                        digits=2
+                       ):
+        """
+        Create a legend on the graduated values of a numerical field. In case of file-based datasets (shapefiles, geopackage, aqlite, etc.) or wkt datasets, given a fieldname, the values of this field are retrieved by the method legendGraduated itself. On the contrary, for a postgis vectorlayer instance, the allValues parameter must be passed containing the list of all the values of the field (it is responsibility of the user to retrieve this list using a call to the underlying DB).
+        
+        Parameters
+        ----------
+        fieldname : str
+            Name of the field whose values must be used.
+        colorlist : list of str
+            List of colors to be used for the creation of the legend. 
+        symbol: list of lists, optional
+            Symbol to be used for the rendering of the features. See the chapter :ref:`symbol-format-help` for a guide on how symbols are defined and the chapter :ref:`symbol-editor-help` for help on the visual Symbol Editor.
+        allValues : list, optional
+            Custom list of values to use for the creation of the legend. Default is None, meaning that, for filebased and wkt vectorlayer instances, the list of all the field values is autonomously retrieved. This parameter must be mandatory passed when the vectorlayer instance is a postgis dataset.
+        classifier_name : str, optional
+            Name of the classifier to use for generating the classes. Possible values are: 'EqualInterval', 'BoxPlot', 'NaturalBreaks', 'FisherJenksSampled', 'StdMean', 'JenksCaspallForced', 'HeadTailBreaks' and 'Quantiles'. Default value is 'Quantiles'. 
+            
+            See https://github.com/pysal/mapclassify for additional help.
+            
+            Each of the different classification methods takes one or more input parameters:
+
+            'EqualInterval': classifier_param1 = the number of classes required
+            
+            'BoxPlot': None
+            
+            'NaturalBreaks': classifier_param1 = the number of classes required
+
+            'FisherJenksSampled':  classifier_param1 = the number of classes required, classifier_param1 = the percentage of values that should form the sample (standard value is 0.1)
+            
+            'StdMean': classifier_param1 = a list containing the multiples of the standard deviation to add/subtract from the sample mean to define the bins (example [-2, -1, 1, 2]
+
+            'JenksCaspallForced':  classifier_param1 = the number of classes required
+            
+            'HeadTailBreaks': None
+            
+            'Quantiles':  classifier_param1 = the number of classes required
+
+        classifier_param1 : float, optional
+            First optional parameter of the classification method selected.
+        classifier_param2 : float, optional
+            Second optional parameter of the classification method selected.
+        interpolate : bool, optional
+            If True, the colors assigned to the items of the legend are calculated by using linear interpolation on the list of colors (thus potentially generating also intermediate colors). If False, only the colors in the list are used. In this case, if the number of distinct values is greated than the number of colors in the list, some legend items will have repeated colors.
+        markersize_min : float, optional
+            Minimal marker size to generate dimensionally graduated symbols (default is 1.0).
+        markersize_max : float, optional
+            Maximal marker size to generate dimensionally graduated symbols (default is 1.0).
+        digits : int, optional
+            Number of decimal digits to use to display floating point values in the description of the legend items (default is 2). Passing a negative number instructs the method to use a G format for all the floating point values.
+        
+        """
+        pass
+
+    
+    #####################################################################################################################################################
+    # Legend representation
+    #####################################################################################################################################################
+    
+    # Returns an Image containing all the items of a legend
+    def legend2Image(self, legend, size=1, clipdimension=LARGE_SYMBOLS_DIMENSION, width=300, fontweight=400, fontsize=9, textcolor="black"):
+        """
+        Given as input a legend returned by a call to one of the methods: :py:meth:`~vectorlayer.legendSingle`, :py:meth:`~vectorlayer.legendCategories` or :py:meth:`~vectorlayer.legendGraduated`, this function returns an PILLOW image containing all the items of the legend.
+        
+        Parameters
+        ----------
+        legend : list of dicts
+            Legend returned by one of the three methods to build a legend.
+        size : int, optional
+            Size of the image to create, in the range [1,3] for "small" (30x30 pixels), "medium" (80x80 pixels) and "big" (256x256 pixels) dimensions. Default is 1.
+        clipdimension : int, optional
+            Optional dimension of the square in pixel to be used to clip the output image to a smaller dimension (default is 999).
+        width : int, optional
+            Width in pixels of the image (default is 300).
+        fontweight : int, optional
+            Weight of the font used to display the descriptions of the legend items (default is 400, meaning plain text, use 300 for a thinner font, 600 or above for a bold font).
+        fontsize : int, optional
+            Height in pixels of the font used to display the descriptions of the legend items (default is 9).
+        textcolor : str, optional
+            Color of the text (default is 'black').
+        """
+        pass
+    
+    
+    # Returns a v.List containing the legend items as list items
+    def legend2List(self, legend, title='', size=1, disabled=False, onclick=None):
+        """
+        Given as input a legend returned by a call to one of the methods: :py:meth:`~vectorlayer.legendSingle`, :py:meth:`~vectorlayer.legendCategories` or :py:meth:`~vectorlayer.legendGraduated`, this function returns a clickable ipyvuetify List widget containing all the items of  the legend.
+        
+        Parameters
+        ----------
+        legend : list of dicts
+            Legend returned by one of the three methods to build a legend.
+        title : str, optional
+            Title of the legend (default is '').
+        size : int, optional
+            Size of the image to create, in the range [1,3] for "small" (30x30 pixels), "medium" (80x80 pixels) and "big" (256x256 pixels) dimensions. Default is 1.
+        disabled : bool, optional
+            If True, the 
+        onclick : callable, optional
+            Python function to call when the user clicks on one of the items of the List widget (default is None). The function has to have three parameters: widget, event, data. By accessing widgets.value the function can understand on which item the click event occurred (from 0 to nitems - 1.
+        """
+        pass
+        
+        
+    #####################################################################################################################################################
+    # Static method to instantiate a parametric symbol
+    #####################################################################################################################################################
     
     # Change color and other properties of a symbol and returns the modified symbol
     @staticmethod
-    def symbolChange(symbol, color='#ff0000', fillColor='#ff0000', fillOpacity=1.0, strokeColor='#ffff00', strokeWidth=0.5, scalemin=None, scalemax=None):
+    def symbolChange(symbol, color='#ff0000', fillColor='#ff0000', fillOpacity=1.0, strokeColor='#ffff00', strokeWidth=0.5, scalemin=None, scalemax=None, size_multiplier=1.0):
         """
         Change color and other properties of a *parametric* (i.e. generic) symbol and returns the modified symbol.
         
@@ -460,6 +625,8 @@ class vectorlayer:
             Minimum scale denominator to be substituted to the tag SCALE-MIN to limit the zoom levels for which the symbol is visible (default is None).
         scalemax : float, optional
             Maximum scale denominator to be substituted to the tag SCALE-MAX to limit the zoom levels for which the symbol is visible (default is None).
+        size_multiplier : float, optional
+            Multiplier factor to be used for increasing/decreasing the size of markers of the width of strokes (default is 1.0).
 
         Returns
         --------
@@ -566,7 +733,31 @@ class vectorlayer:
     def identify_fields(self, listofattributes):
         pass
                 
-                
+
+    @property
+    def identify_width(self):
+        """
+        Get/Set the width of the popup widget that opens when an identify operation is done on a feature of the vector layer.
+        
+        Returns
+        --------
+        width : str
+            Width in pixels or any other CSS units of the popup widget (default is '180px')
+
+        Example
+        -------
+        Programmatically change the width of the identify popup::
+            
+            vlayer.identify_width = '3vw'
+            print(vlayer.identify_width)
+        """
+        pass
+        
+    @identify_width.setter
+    def identify_width(self, width):
+        pass
+    
+
     #####################################################################################################################################################
     # Create an ipyleaflet.TileLayer
     #####################################################################################################################################################
