@@ -439,6 +439,11 @@ class vectorlayer:
             Symbol to be used for the rendering of the features. See the chapter :ref:`symbol-format-help` for a guide on how symbols are defined and the chapter :ref:`symbol-editor-help` for help on the visual Symbol Editor.
         description : str, optional
             Description of the unique item of the legend (default is '').
+
+        Returns
+        --------
+        legend : list of dicts
+            A legend is a list of dictionaries, one for each item. Each dict contains the keys: description, rule and symbol
         """
         pass
 
@@ -465,7 +470,12 @@ class vectorlayer:
             If True, the colors assigned to the items of the legend are calculated by using linear interpolation on the list of colors (thus potentially generating also intermediate colors). If False, only the colors in the list are used. In this case, if the number of distinct values is greated than the number of colors in the list, some legend items will have repeated colors.
         distinctValues : list, optional
             Custom list of distinct values to use for the creation of the legend. Default is None, meaning that, for filebased and wkt vectorlayer instances, the list of distinct values is autonomously calculated. This parameter must be mandatory passed when the vectorlayer instance is a postgis dataset.
-            
+
+        Returns
+        --------
+        legend : list of dicts
+            A legend is a list of dictionaries, one for each item. Each dict contains the keys: description, rule and symbol
+
         Example
         -------
         Create a categories legend on a field of a shapefile::
@@ -559,7 +569,42 @@ class vectorlayer:
             Maximal marker size to generate dimensionally graduated symbols (default is 1.0).
         digits : int, optional
             Number of decimal digits to use to display floating point values in the description of the legend items (default is 2). Passing a negative number instructs the method to use a G format for all the floating point values.
+
+        Returns
+        --------
+        legend : list of dicts
+            A legend is a list of dictionaries, one for each item. Each dict contains the keys: description, rule and symbol
+
+        Example
+        -------
+        Create a graduated legend on a numerical field of a geopackage dataset::
         
+            # Import libraries
+            from IPython.display import display
+            from geolayer import vectorlayer
+            import plotly.express as px
+    
+            # Create a vectorlayer instance from a file dataset (geopackage)
+            vlayer = vectorlayer.file('.../EuroGlobalMap.gpkg', layer='CoastA', epsg=4258)
+
+            # Define a parametrical symbol
+            symbol = [
+                        [
+                           ["PolygonSymbolizer", "fill", 'FILL-COLOR'],
+                           ["PolygonSymbolizer", "fill-opacity", 0.8],
+                           ["LineSymbolizer", "stroke", "#000000"],
+                           ["LineSymbolizer", "stroke-width", 1.0]
+                        ]
+            ]
+
+            # Create a graduated legend with 8 classes on the Shape_Area field
+            legend = vlayer.legendGraduated('Shape_Area',
+                                            px.colors.sequential.Viridis,
+                                            symbol=symbol,
+                                            interpolate=True,
+                                            classifier_name='Quantiles',
+                                            classifier_param1=8,
+                                            digits=6)
         """
         pass
 
@@ -589,6 +634,45 @@ class vectorlayer:
             Height in pixels of the font used to display the descriptions of the legend items (default is 9).
         textcolor : str, optional
             Color of the text (default is 'black').
+            
+        Example
+        -------
+        Display a legend as a PILLOW image::
+            
+            # Import libraries
+            from IPython.display import display
+            from geolayer import vectorlayer
+            import plotly.express as px
+    
+            # Create a vectorlayer instance from a file dataset (geopackage)
+            vlayer = vectorlayer.file('.../EuroGlobalMap.gpkg', layer='CoastA', epsg=4258)
+
+            # Define a parametrical symbol
+            symbol = [
+                        [
+                           ["PolygonSymbolizer", "fill", 'FILL-COLOR'],
+                           ["PolygonSymbolizer", "fill-opacity", 0.8],
+                           ["LineSymbolizer", "stroke", "#000000"],
+                           ["LineSymbolizer", "stroke-width", 1.0]
+                        ]
+            ]
+
+            # Create a graduated legend with 8 classes on the Shape_Area field
+            legend = vlayer.legendGraduated('Shape_Area',
+                                            px.colors.sequential.Viridis,
+                                            symbol=symbol,
+                                            interpolate=True,
+                                            classifier_name='Quantiles',
+                                            classifier_param1=8,
+                                            digits=6)
+            
+            # Display the legend as an image
+            img = vlayer.legend2Image(legend, size=1, fontsize=13, fontweight=400, width=400)
+            display(img)
+            
+        .. figure:: figures/legend_image.png
+           :scale: 100 %
+           :alt: Image of a graduated legend
         """
         pass
     
@@ -610,6 +694,50 @@ class vectorlayer:
             If True, the 
         onclick : callable, optional
             Python function to call when the user clicks on one of the items of the List widget (default is None). The function has to have three parameters: widget, event, data. By accessing widgets.value the function can understand on which item the click event occurred (from 0 to nitems - 1.
+            
+        Example
+        -------
+        Display a legend as a ipyvuetify List widget::
+            
+            # Import libraries
+            from IPython.display import display
+            from geolayer import vectorlayer
+            import plotly.express as px
+    
+            # Create a vectorlayer instance from a file dataset (geopackage)
+            vlayer = vectorlayer.file('.../EuroGlobalMap.gpkg', layer='CoastA', epsg=4258)
+
+            # Define a parametrical symbol
+            symbol = [
+                        [
+                           ["PolygonSymbolizer", "fill", 'FILL-COLOR'],
+                           ["PolygonSymbolizer", "fill-opacity", 0.8],
+                           ["LineSymbolizer", "stroke", "#000000"],
+                           ["LineSymbolizer", "stroke-width", 1.0]
+                        ]
+            ]
+
+            # Create a graduated legend with 8 classes on the Shape_Area field
+            legend = vlayer.legendGraduated('Shape_Area',
+                                            px.colors.sequential.Viridis,
+                                            symbol=symbol,
+                                            interpolate=True,
+                                            classifier_name='Quantiles',
+                                            classifier_param1=8,
+                                            digits=6)
+            
+            # Callback to be called when the user clicks on an item of the legend
+            def onclick(widget, event, data):
+                print(legend[widget.value])
+
+            # Create a List widget from the legend
+            w = vlayer.legend2List(legend, title='Legend', size=2, onclick=onclick)
+            display(w)
+            
+        .. figure:: figures/legend_list.png
+           :scale: 100 %
+           :alt: List widget created from a graduated legend
+           
         """
         pass
         
