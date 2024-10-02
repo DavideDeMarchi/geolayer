@@ -205,6 +205,7 @@ class rasterlayer:
             # Display the map
             display(m)
         """
+        pass
         
     
     #####################################################################################################################################################
@@ -440,6 +441,22 @@ class rasterlayer:
         ----------
         filepath : str
             Full path of the raster file.
+        
+        Example
+        -------
+        Request info on a VRT raster file::
+        
+            # Import libraries
+            from IPython.display import display
+            from geolayer import rasterlayer
+    
+            info = rasterlayer.info('/eos/jeodpp/data/base/Energy/EUROPE/ESA/Biomass_cci/VER3-0/Data/VRT/2018/2018_ESACCI_BIOMASS-L4-AGB.vrt')
+            display(info)
+            
+    .. figure:: docs/source/figures/rasterlayer_info.png
+       :scale: 100 %
+       :alt: Dictionary returned by the call to info method
+            
         """
         pass
     
