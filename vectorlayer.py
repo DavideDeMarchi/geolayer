@@ -693,7 +693,7 @@ class vectorlayer:
         disabled : bool, optional
             If True, the 
         onclick : callable, optional
-            Python function to call when the user clicks on one of the items of the List widget (default is None). The function has to have three parameters: widget, event, data. By accessing widgets.value the function can understand on which item the click event occurred (from 0 to nitems - 1.
+            Python function to call when the user clicks on one of the items of the List widget (default is None). The function must manage three parameters: widget, event, data. By accessing widgets.value the function can understand on which item the click event occurred (from 0 to nitems-1).
             
         Example
         -------
