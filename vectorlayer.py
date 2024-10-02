@@ -458,13 +458,41 @@ class vectorlayer:
         fieldname : str
             Name of the field whose distinct values must be used.
         colorlist : list of str
-            List of colors to be used for the creation of the legend. 
+            List of colors to be used for the creation of the legend. See `Plotly sequential color scales <https://plotly.com/python/builtin-colorscales/#builtin-sequential-color-scales>`_ and `Plotly qualitative color sequences <https://plotly.com/python/discrete-color/#color-sequences-in-plotly-express>`_ for possible color lists.
         symbol: list of lists, optional
             Symbol to be used for the rendering of the features. See the chapter :ref:`symbol-format-help` for a guide on how symbols are defined and the chapter :ref:`symbol-editor-help` for help on the visual Symbol Editor.
         interpolate : bool, optional
             If True, the colors assigned to the items of the legend are calculated by using linear interpolation on the list of colors (thus potentially generating also intermediate colors). If False, only the colors in the list are used. In this case, if the number of distinct values is greated than the number of colors in the list, some legend items will have repeated colors.
         distinctValues : list, optional
             Custom list of distinct values to use for the creation of the legend. Default is None, meaning that, for filebased and wkt vectorlayer instances, the list of distinct values is autonomously calculated. This parameter must be mandatory passed when the vectorlayer instance is a postgis dataset.
+            
+        Example
+        -------
+        Create a categories legend on a field of a shapefile::
+        
+            # Import libraries
+            from IPython.display import display
+            from geolayer import vectorlayer
+            import plotly.express as px
+    
+            # Create a vectorlayer instance from a file dataset (shapefile)
+            vlayer = vectorlayer.file('.../NUTS_RG_03M_2021_4326_0.shp')
+
+            # Define a parametrical symbol
+            symbol = [
+                        [
+                           ["PolygonSymbolizer", "fill", 'FILL-COLOR'],
+                           ["PolygonSymbolizer", "fill-opacity", 0.8],
+                           ["LineSymbolizer", "stroke", "#000000"],
+                           ["LineSymbolizer", "stroke-width", 1.0]
+                        ]
+            ]
+
+            # Create a legend on the distinct values of the CNTR_CODE field
+            legend = vlayer.legendCategories('CNTR_CODE',
+                                             px.colors.qualitative.Dark24,
+                                             symbol=symbol,
+                                             interpolate=False)
         """
         pass
             
