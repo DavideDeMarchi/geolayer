@@ -20,7 +20,7 @@
 # limitations under the Licence.
 
 # Python imports
-import ipyleaflet
+# import ipyleaflet
 from io import StringIO, BytesIO
 import sys
 import json
@@ -29,17 +29,17 @@ import datetime
 import requests
 from PIL import Image, ImageDraw, ImageFont
 from pathlib import Path
-import ipyvuetify as v
+# import ipyvuetify as v
 from collections import Counter
 import statistics
 import numpy as np
 
 # vois import
-from vois import colors
-from vois.vuetify import settings, textlist, palettePicker
+# from vois import colors
+# from vois.vuetify import settings, textlist, palettePicker
 
 # local import
-from geolayer import classifiers
+from geolayer.utility import classifiers
 from geolayer.api import rasterAPI, vectorAPI
 
 # Symbols dimension in pixels
@@ -373,7 +373,7 @@ class VectorLayer:
             else:
                 c = colorlist[index % len(colorlist)]
 
-            s = vectorlayer.symbolChange(symbol, color=c, fillColor=c, strokeColor=c)
+            s = VectorLayer.symbolChange(symbol, color=c, fillColor=c, strokeColor=c)
 
             if isinstance(value, str):
                 rule = "[" + fieldname + "] = '" + str(value) + "'"
@@ -410,7 +410,7 @@ class VectorLayer:
         values = [float(x) for x in values]
 
         # Create the classes
-        bins = vectorlayer.createClasses(values, classifier_name, classifier_param1, classifier_param2)
+        bins = VectorLayer.createClasses(values, classifier_name, classifier_param1, classifier_param2)
 
         res = []
         if len(bins) > 0:

@@ -34,6 +34,12 @@ from vois.vuetify import textlist
 # geolayer import
 from geolayer.api import rasterAPI
 
+from geolayer.templates import RGB_MASK
+
+
+from geolayer.utility.templates import fill_mask
+
+# fill_mask(RGB_MASK, band=3)
 
 
 #####################################################################################################################################################
@@ -100,7 +106,7 @@ def minmaxrange(stac_band_dict, scalemin=None, scalemax=None):
 #####################################################################################################################################################
 # Class rasterlayer to create server-side VectorLayer instances for raster display without using inter client library
 #####################################################################################################################################################
-class rasterlayer:
+class RasterLayer:
     
     # Initialization
     def __init__(self,

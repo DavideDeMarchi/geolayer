@@ -1,4 +1,4 @@
-from geolayer.utility.mask import load_mask
+from geolayer.utility.templates import load_mask
 
 RGB_MASK = load_mask(mask_name='rgb')
 
