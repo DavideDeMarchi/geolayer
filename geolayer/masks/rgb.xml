@@ -1,0 +1,12 @@
+<VRTRasterBand dataType="Byte" band="{band}">
+    <ColorInterp>{color_interpreter}</ColorInterp>
+    <ComplexSource>
+        <SourceFilename relativeToVRT="0">{source_file_name}</SourceFilename>
+        <SourceBand>{source_band}</SourceBand>
+        <SourceProperties RasterXSize="{raster_x_size}" RasterYSize="{raster_y_size}" DataType="{data_type}"/>
+        <SrcRect xOff="0" yOff="0" xSize="{source_x_size}" ySize="{source_y_size}"/>
+        <DstRect xOff="0" yOff="0" xSize="{destination_x_size}" ySize="{destination_y_size}"/>
+        <ScaleRatio>{scale_ratio}</ScaleRatio>
+        <ScaleOffset>{scale_offset}</ScaleOffset>
+    </ComplexSource>
+</VRTRasterBand>

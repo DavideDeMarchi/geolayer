@@ -1,6 +1,6 @@
 """BDAP (JRC Big Data Analytics Platform) layer creation with minimal dependencies
 (to create server-side inter.VectorLayer instances for vector display without using the client version of inter)."""
-# Author(s): Davide.De-Marchi@ec.europa.eu
+# Author(s): Davide.De-Marchi@ec.europa.eu, Edoardo.RAMALLI@ec.europa.eu
 # Copyright © European Union 2022-2024
 # 
 # Licensed under the EUPL, Version 1.2 or as soon they will be approved by 
