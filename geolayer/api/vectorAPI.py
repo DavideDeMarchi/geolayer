@@ -1,5 +1,5 @@
 """Simplified interface to the BDAP VECTORAPI."""
-# Author(s): Davide.De-Marchi@ec.europa.eu
+# Author(s): Davide.De-Marchi@ec.europa.eu, Edoardo.RAMALLI@ec.europa.eu
 # Copyright © European Union 2022-2024
 # 
 # Licensed under the EUPL, Version 1.2 or as soon they will be approved by 
@@ -24,6 +24,7 @@ import requests
 from pathlib import Path
 from osgeo import ogr
 
+from geolayer.utility.exceptions import InvalidBDAPAnswerException
 
 # Base URL for the Vector API calls
 #VECTORAPI_URL = 'https://jeodpp.jrc.ec.europa.eu/jiplib-view-dev?VECTORAPI=1&'
@@ -51,21 +52,6 @@ def getFeatureType(geomType):
     else:
         return 'Unknown'
 
-    
-
-#####################################################################################################################################################
-# Python user-defined exceptions
-#####################################################################################################################################################
-
-# Bad answer from a BDAP HTTP(S) request
-class InvalidBDAPAnswerException(Exception):
-    "Raised when BDAP server fails to answer"
-
-    def __init__(self, url, data=''):
-        self.message = 'BDAP failed to correctly execute the command: ' + str(url)
-        if len(data) > 0:
-            self.message += '\nData: ' + str(data)
-        super().__init__(self.message)    
 
 
 

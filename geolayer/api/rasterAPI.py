@@ -31,15 +31,7 @@ RASTERAPI_URL = 'https://jeodpp.jrc.ec.europa.eu/jiplib-view/?RASTERAPI=1&'
 # Python user-defined exceptions
 #####################################################################################################################################################
 
-# Bad answer from a BDAP HTTP(S) request
-class InvalidBDAPAnswerException(Exception):
-    "Raised when BDAP server fails to answer"
 
-    def __init__(self, url, data=''):
-        self.message = 'BDAP failed to correctly execute the command: ' + str(url)
-        if len(data) > 0:
-            self.message += '\nData: ' + str(data)
-        super().__init__(self.message)    
 
 
 
