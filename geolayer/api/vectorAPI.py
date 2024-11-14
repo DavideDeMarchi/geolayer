@@ -181,6 +181,8 @@ def values(dataset_path : str,
     if req.status_code == 200:
         if len(req.text) > 0:
             res = json.loads(req.text)
+            if 'values' in res:
+                res = res['values']
     else:
         raise InvalidAnswerException(url=req.url)
         
@@ -205,6 +207,8 @@ def distinct(dataset_path : str,
     if req.status_code == 200:
         if len(req.text) > 0:
             res = json.loads(req.text)
+            if 'distinct' in res:
+                res = res['distinct']
     else:
         raise InvalidAnswerException(url=req.url)
         
