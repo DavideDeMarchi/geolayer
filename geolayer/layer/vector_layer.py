@@ -53,7 +53,24 @@ LARGE_SYMBOLS_DIMENSION  = 256
 # Base URL for the Tile API calls
 BASE_URL = 'http://141.227.140.197/dts/tile'
 
-    
+# Starting of the XML Map definition
+MAP_PREFIX = '''<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Map[]>
+<Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over" background-color="#ffffff00" maximum-extent="-20037508.34,-20037508.34,20037508.34,20037508.34" buffer-size="50">
+    <Parameters>
+        <Parameter name="bounds">-180,-85.05112877980659,180,85.05112877980659</Parameter>
+        <Parameter name="center">0,0,2</Parameter>
+        <Parameter name="format">png</Parameter>
+        <Parameter name="minzoom">0</Parameter>
+        <Parameter name="maxzoom">22</Parameter>
+        <Parameter name="description">TILEGEO/GEOLAYER display system</Parameter>
+    </Parameters>
+'''
+
+MAP_END = '</Map>'
+
+
+
 #####################################################################################################################################################
 # Notes on symbology:
 #
@@ -74,7 +91,7 @@ BASE_URL = 'http://141.227.140.197/dts/tile'
 #
 #    vlayer = VectorLayer.file('path to a .shp file', epsg=4326)
 #    vlayer.symbologyClear()
-#    vlayer.symbologyAdd(symbol=symbol)                              # Apply symbol to all features of the vectorlayer
+#    vlayer.symbologyAdd(rule='all', symbol=symbol)                  # Apply symbol to all features of the vectorlayer
 #    vlayer.symbologyAdd(rule="[CNTR_CODE] = 'IT'", symbol=symbol)   # Apply symbol only to features that are filtered by the rule on attributes
 #                                                                    # See https://github.com/mapnik/mapnik/wiki/Filter for help on filter sintax
 #    mapUtils.addLayer(m, vlayer.tileLayer(), name='Polygons')
@@ -769,23 +786,13 @@ class VectorLayer:
         
         self.md5 = self.MD5()
         
-        prefix = '''<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE Map[]>
-<Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over" background-color="#ffffff00" maximum-extent="-20037508.34,-20037508.34,20037508.34,20037508.34" buffer-size="50">
-    <Parameters>
-        <Parameter name="bounds">-180,-85.05112877980659,180,85.05112877980659</Parameter>
-        <Parameter name="center">0,0,2</Parameter>
-        <Parameter name="format">png</Parameter>
-        <Parameter name="minzoom">0</Parameter>
-        <Parameter name="maxzoom">22</Parameter>
-        <Parameter name="description">TILEGEO/GEOLAYER display system</Parameter>
-    </Parameters>
-'''
+        prefix = MAP_PREFIX
+        
         styles = self.xml_styles(compositing=compositing)
         
         layer = self.xml_layer()
         
-        end = '</Map>'
+        end = MAP_END
         
         return prefix + '\n' + styles + '\n' + layer + '\n' + end
     
@@ -796,8 +803,7 @@ class VectorLayer:
         # Calculating the number of styles 
         numstyles = 0
         for rule, symbol in self.rules.items():
-            n = len(symbol)
-            numstyles = max(numstyles, len(symbol))
+            numstyles = max(numstyles, len(symbol))   # len(symbol) is the number of layers present in the symbol
             
         res = ''
         
@@ -852,8 +858,7 @@ class VectorLayer:
         # Calculating the number of styles 
         numstyles = 0
         for rule, symbol in self.rules.items():
-            n = len(symbol)
-            numstyles = max(numstyles, len(symbol))
+            numstyles = max(numstyles, len(symbol))   # len(symbol) is the number of layers present in the symbol
 
             
         # Add specific settings of the three formats

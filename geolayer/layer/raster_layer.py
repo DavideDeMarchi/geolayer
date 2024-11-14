@@ -33,13 +33,6 @@ from vois.vuetify import textlist
 # geolayer import
 from geolayer.api import rasterAPI
 
-from geolayer.templates import RGB_MASK
-
-
-from geolayer.utility.templates import fill_mask
-
-# fill_mask(RGB_MASK, band=3)
-
 
 #####################################################################################################################################################
 # Utility functions
@@ -171,7 +164,7 @@ class RasterLayer:
     def single(cls,
                filepath,
                band=1,
-               epsg=4326,
+               epsg=None,
                proj='',                      # To be used for projections that do not have an EPSG code (if not empty it is used instead of the passed epsg)
                nodata=999999.0,
                identify_dict=None,           # Dictionary to convert integer pixel values to strings (e.g. classes names)
@@ -179,6 +172,13 @@ class RasterLayer:
                identify_digits=6,            # Number of digits for identify of float values
                identify_label='Value'):      # Label for identify operation
     
+        if epsg is None and len(proj) == 0:
+            info = RasterLayer.info(filepath)
+            if 'epsg' in info:
+                epsg = info['epsg']
+            if 'proj4' in info:
+                proj = info['proj4']
+                
         instance = cls(filepath=filepath, band=band, epsg=epsg, proj=proj, nodata=nodata,
                        identify_dict=identify_dict, identify_integer=identify_integer, identify_digits=identify_digits, identify_label=identify_label)
         return instance
@@ -703,7 +703,10 @@ def norm_diff(in_ar, out_ar, xoff, yoff, xsize, ysize, raster_xsize, raster_ysiz
         print("   procid:         %s"%str(self.procid))
         print("   filepath:       %s"%self.filepath)
         print("   band:           %d"%self.band)
-        print("   epsg:           %d"%self.epsg)
+        if self.epsg is None:
+            print("   epsg:           None")
+        else:
+            print("   epsg:           %d"%self.epsg)
         print("   proj:           %s"%self.proj)
         print("   scaling:        %s"%self.scaling)
         print("   opacity:        %-10.6lf"%self.opacity);
@@ -1006,7 +1009,7 @@ def norm_diff(in_ar, out_ar, xoff, yoff, xsize, ysize, raster_xsize, raster_ysiz
 '''        
     
         band = ''
-        if self.band > 0: 
+        if self.band > 0:
             band = RASTER_BAND %self.band
 
         colorizer = ''
@@ -1029,7 +1032,7 @@ def norm_diff(in_ar, out_ar, xoff, yoff, xsize, ysize, raster_xsize, raster_ysiz
             strmode = ' comp-op="%s" '%self.composition
             
         if len(self.proj) == 0 or self.proj is None:
-            srs = '+init=epsg:%d'%self.epsg
+            srs = 'epsg:%d'%self.epsg
         else:
             srs = self.proj
 
