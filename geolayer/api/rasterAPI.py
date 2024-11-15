@@ -22,8 +22,8 @@
 import json
 import requests
 
-# Base URL for the raster API calls
-BASE_URL = 'http://141.227.140.197/dts/raster'
+# geolayer import
+from geolayer import settings
 
 
 #####################################################################################################################################################
@@ -49,7 +49,7 @@ def rasterInfo(dataset_path   : str,
                request_stats  : bool = False,
                detailed_stats : bool = False):
     
-    url = '{}/info'.format(BASE_URL)
+    url = '%sinfo'%settings.RASTER_ENDPOINT
     req = requests.get(url, params={'dataset_path': dataset_path,
                                     'stats':        request_stats,
                                     'detailed':     detailed_stats})
@@ -74,7 +74,7 @@ def rasterIdentify(dataset_path: str,
                    lon: float = 0.0,
                    lat: float = 0.0):
     
-    url = '{}/identify'.format(BASE_URL)
+    url = '%sidentify'%settings.RASTER_ENDPOINT
     req = requests.get(url, params={'dataset_path': dataset_path,
                                     'band': band,
                                     'epsg': epsg,
@@ -105,7 +105,7 @@ def rasterQuery(dataset_path: str,
     j = { "lon": list(lon), "lat": list(lat) }
     strjson = json.dumps(j)
     
-    url = '{}/query'.format(BASE_URL)
+    url = '%squery'%settings.RASTER_ENDPOINT
     req = requests.get(url,
                        params={'dataset_path': dataset_path,
                                'band': band,

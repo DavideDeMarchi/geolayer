@@ -39,36 +39,16 @@ import math
 from vois import colors
 from vois.vuetify import settings, textlist, palettePicker
 
-# local import
+# geolayer import
+from geolayer import settings
 from geolayer.api import redisAPI, rasterAPI, vectorAPI
-from geolayer.utility import classifiers
+from geolayer.utility import classifiers, templates
 
 
 # Symbols dimension in pixels
 SMALL_SYMBOLS_DIMENSION  = 30
 MEDIUM_SYMBOLS_DIMENSION = 80
 LARGE_SYMBOLS_DIMENSION  = 256
-
-
-# Base URL for the Tile API calls
-BASE_URL = 'http://141.227.140.197/dts/tile'
-
-# Starting of the XML Map definition
-MAP_PREFIX = '''<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE Map[]>
-<Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over" background-color="#ffffff00" maximum-extent="-20037508.34,-20037508.34,20037508.34,20037508.34" buffer-size="50">
-    <Parameters>
-        <Parameter name="bounds">-180,-85.05112877980659,180,85.05112877980659</Parameter>
-        <Parameter name="center">0,0,2</Parameter>
-        <Parameter name="format">png</Parameter>
-        <Parameter name="minzoom">0</Parameter>
-        <Parameter name="maxzoom">22</Parameter>
-        <Parameter name="description">TILEGEO/GEOLAYER display system</Parameter>
-    </Parameters>
-'''
-
-MAP_END = '</Map>'
-
 
 
 #####################################################################################################################################################
@@ -115,7 +95,7 @@ MAP_END = '</Map>'
 
 
 #####################################################################################################################################################
-# Class vectorlayer to create server-side VectorLayer instances for vector display without using inter client library
+# Class VectorLayer for vector display
 # Manages vector datasets in files (shapefiles, geopackage, etc.), WKT strings and POSTGIS queries
 #####################################################################################################################################################
 class VectorLayer:
@@ -128,6 +108,8 @@ class VectorLayer:
                  proj='',              # To be used for projections that do not have an EPSG code (if not empty it is used instead of the passed epsg)
                  identify_fields=[]):  # List of names of field to display on identify operation
 
+        self.md5 = None
+        
         self.isPostgis = False
         self.isWKT     = False
         
@@ -764,14 +746,14 @@ class VectorLayer:
 
         
     #####################################################################################################################################################
-    # Internal functions
+    # Storage of XML Map in Redis and tileUrl calculation
     #####################################################################################################################################################
     
     # Returns the url to display the layer
     def tileUrl(self, file_format='png'):
         procid = self.toLayer()
         if not procid is None:
-            return '%s/%s/{z}/{x}/{y}.%s'%(BASE_URL, procid, file_format)
+            return '%s%s/{z}/{x}/{y}.%s'%(settings.TILE_ENDPOINT, procid, file_format)
 
         
     # Save the layer in Redis and returns the procid
@@ -781,18 +763,22 @@ class VectorLayer:
         return self.procid
 
     
+    #####################################################################################################################################################
+    # Generation of the XML Map
+    #####################################################################################################################################################
+    
     # Return the full XML in Mapnik syntax
     def xml(self, compositing='src-over'):
         
         self.md5 = self.MD5()
         
-        prefix = MAP_PREFIX
+        prefix = templates.MAP_PREFIX
         
         styles = self.xml_styles(compositing=compositing)
         
         layer = self.xml_layer()
         
-        end = MAP_END
+        end = templates.MAP_END
         
         return prefix + '\n' + styles + '\n' + layer + '\n' + end
     
@@ -800,6 +786,9 @@ class VectorLayer:
     # Return the XML of the Styles
     def xml_styles(self, compositing='src-over'):
         
+        if self.md5 is None:
+            self.md5 = self.MD5()
+            
         # Calculating the number of styles 
         numstyles = 0
         for rule, symbol in self.rules.items():
@@ -809,7 +798,7 @@ class VectorLayer:
         
         # Write the styles
         for i in range(numstyles):
-            name = f'{self.md5}_{i}'
+            name = '%s_%d'%(self.md5, i)
             
             if i == 0:
                 style = ''
@@ -855,6 +844,9 @@ class VectorLayer:
     # Return the XML of the Layer
     def xml_layer(self):
         
+        if self.md5 is None:
+            self.md5 = self.MD5()
+        
         # Calculating the number of styles 
         numstyles = 0
         for rule, symbol in self.rules.items():
@@ -871,7 +863,7 @@ class VectorLayer:
             
             # Write the styles
             for i in range(numstyles):
-                name = f'{self.md5}_{i}'
+                name = '%s_%d'%(self.md5, i)
                 layer += '\n        <StyleName>%s</StyleName>'%name
                 
             features = '\n'.join(['"%s"'%x for x in self.wktlist])
@@ -917,7 +909,7 @@ class VectorLayer:
             
             # Write the styles
             for i in range(numstyles):
-                name = f'{self.md5}_{i}'
+                name = '%s_%d'%(self.md5, i)
                 layer += '\n        <StyleName>%s</StyleName>'%name
                 
             # Write the Datasource
@@ -970,7 +962,7 @@ def symbol2Image(symbol=[], size=1, feature='Point', clipdimension=999, showbord
     #print(vlayer.rules)
     #print(vlayer.xml())
 
-    url = '%s/%s/1/0/0.png'%(BASE_URL, vlayer.toLayer())
+    url = '%s%s/1/0/0.png'%(settings.TILE_ENDPOINT, vlayer.toLayer())
     response = requests.get(url)
     
     if len(response.content) > 5 and response.content[0] == 137 and response.content[1] == 80 and response.content[2] == 78 and response.content[3] == 71 and response.content[4] == 13:

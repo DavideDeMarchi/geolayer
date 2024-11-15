@@ -1,4 +1,6 @@
-"""Simplified interface to the tilegeo REDISAPI."""
+"""
+Simplified interface to the tilegeo VRTAPI.
+"""
 # Author(s): Davide.De-Marchi@ec.europa.eu, Edoardo.Ramalli@ec.europa.eu
 # Copyright © European Union 2022-2024
 # 
@@ -25,9 +27,6 @@ import requests
 # geolayer import
 from geolayer import settings
 
-# Expiration time for redis keys in seconds
-REDIS_EXPIRE_SECONDS = 60 * 60 * 24  # 1-day
-
 
 #####################################################################################################################################################
 # Python user-defined exceptions
@@ -46,62 +45,36 @@ class InvalidAnswerException(Exception):
 
 
 #####################################################################################################################################################
-# Store text content (i.e. XML) in redis key-value db
-# Returns a code string
+# Store text content (i.e. VRT files) in a temporary server folder
+# Returns a json containing file_path and the corresponding code
 # ####################################################################################################################################################
-def redisStore(text: str,
-               expire: int = REDIS_EXPIRE_SECONDS):
+def vrtStore(vrt_string: str):
     
-    req = requests.post(settings.REDIS_ENDPOINT, json={'text': text, 'expire': expire})
+    req = requests.post(settings.VRT_ENDPOINT, json={'vrt_string': vrt_string})
     
-    code = None
+    res = {}
     if req.status_code == 200:
         if len(req.text) > 0:
             res = json.loads(req.text)
-            if 'done' in res and res['done']:
-                code = res['code']
     else:
         raise InvalidAnswerException(url=url)
         
-    return code
+    return res
 
 
 #####################################################################################################################################################
 # Retrieve text content from a code
-#####################################################################################################################################################
-def redisGet(code: str):
+# ####################################################################################################################################################
+def vrtGet(code: str):
     
-    url = '%s%s'%(settings.REDIS_ENDPOINT,code)
+    url = '%s%s'%(settings.VRT_ENDPOINT,code)
     req = requests.get(url)
     
-    text = None
+    res = {}
     if req.status_code == 200:
         if len(req.text) > 0:
             res = json.loads(req.text)
-            if 'value' in res:
-                text = res['value']
     else:
         raise InvalidAnswerException(url=url)
         
-    return text
-
-
-#####################################################################################################################################################
-# Delete a key-value record from redis db
-# Return True or False
-#####################################################################################################################################################
-def redisDelete(code: str):
-    
-    url = '%s%s'%(settings.REDIS_ENDPOINT,code)
-    req = requests.delete(url)
-    
-    result = False
-    if req.status_code == 200:
-        if len(req.text) > 0:
-            res = json.loads(req.text)
-            if 'value' in res:
-                result = res['value'] is not None
-    else:
-        raise InvalidAnswerException(url=url)
-        
-    return result
+    return res

@@ -23,9 +23,8 @@ import json
 import requests
 from pathlib import Path
 
-
-# Base URL for the Vector API calls
-BASE_URL = 'http://141.227.140.197/dts/vector'
+# geolayer import
+from geolayer import settings
 
 
 # Returns a FeatureType from a GeometryType ('Point', 'Polyline', 'Polygon' or 'Unknown')
@@ -64,7 +63,7 @@ class InvalidAnswerException(Exception):
 #####################################################################################################################################################
 def layers(dataset_path : str):
     
-    url = '{}/layers'.format(BASE_URL)
+    url = '%slayers'%settings.VECTOR_ENDPOINT
     req = requests.get(url, params={'dataset_path': dataset_path})
     
     res = {}
@@ -90,7 +89,7 @@ def layer(dataset_path : str,
     if layer_name is None:
         layer_name = Path(dataset_path).stem
     
-    url = '{}/layer'.format(BASE_URL)
+    url = '%slayer'%settings.VECTOR_ENDPOINT
     req = requests.get(url, params={'dataset_path': dataset_path,
                                     'layer_name':   layer_name})
     
@@ -119,7 +118,7 @@ def fields(dataset_path : str,
     if layer_name is None:
         layer_name = Path(dataset_path).stem
     
-    url = '{}/fields'.format(BASE_URL)
+    url = '%sfields'%settings.VECTOR_ENDPOINT
     req = requests.get(url, params={'dataset_path': dataset_path,
                                     'layer_name':   layer_name})
     res = {}
@@ -149,7 +148,7 @@ def field(dataset_path : str,
     if layer_name is None:
         layer_name = Path(dataset_path).stem
     
-    url = '{}/field'.format(BASE_URL)
+    url = '%sfield'%settings.VECTOR_ENDPOINT
     req = requests.get(url, params={'dataset_path': dataset_path,
                                     'layer_name':   layer_name,
                                     'field_name':   field_name})
@@ -173,7 +172,7 @@ def values(dataset_path : str,
     if layer_name is None:
         layer_name = Path(dataset_path).stem
     
-    url = '{}/values'.format(BASE_URL)
+    url = '%svalues'%settings.VECTOR_ENDPOINT
     req = requests.get(url, params={'dataset_path': dataset_path,
                                     'layer_name':   layer_name,
                                     'field_name':   field_name})
@@ -199,7 +198,7 @@ def distinct(dataset_path : str,
     if layer_name is None:
         layer_name = Path(dataset_path).stem
     
-    url = '{}/distinct'.format(BASE_URL)
+    url = '%sdistinct'%settings.VECTOR_ENDPOINT
     req = requests.get(url, params={'dataset_path': dataset_path,
                                     'layer_name':   layer_name,
                                     'field_name':   field_name})
@@ -225,7 +224,7 @@ def stats(dataset_path : str,
     if layer_name is None:
         layer_name = Path(dataset_path).stem
     
-    url = '{}/stats'.format(BASE_URL)
+    url = '%sstats'%settings.VECTOR_ENDPOINT
     req = requests.get(url, params={'dataset_path': dataset_path,
                                     'layer_name':   layer_name,
                                     'field_name':   field_name})
@@ -253,7 +252,7 @@ def identify(dataset_path : str,
     if layer_name is None:
         layer_name = Path(dataset_path).stem
     
-    url = '{}/identify'.format(BASE_URL)
+    url = '%sidentify'%settings.VECTOR_ENDPOINT
     req = requests.get(url, params={'dataset_path': dataset_path,
                                     'layer_name':   layer_name,
                                     'lon':          lon,
