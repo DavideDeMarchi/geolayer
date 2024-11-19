@@ -61,7 +61,7 @@ def redisStore(text: str,
             if 'done' in res and res['done']:
                 code = res['code']
     else:
-        raise InvalidAnswerException(url=url)
+        raise InvalidAnswerException(url=settings.REDIS_ENDPOINT)
         
     return code
 

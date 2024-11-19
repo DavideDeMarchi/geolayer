@@ -57,7 +57,7 @@ def vrtStore(vrt_string: str):
         if len(req.text) > 0:
             res = json.loads(req.text)
     else:
-        raise InvalidAnswerException(url=url)
+        raise InvalidAnswerException(url=settings.VRT_ENDPOINT)
         
     return res
 

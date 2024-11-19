@@ -336,10 +336,9 @@ class VectorLayer:
         
         if distinctValues is None:
             values = list(self.distinct(fieldname).keys())
+            values.sort()
         else:
             values = list(distinctValues)
-        
-        values.sort()
     
         self.symbologyClear()
         
@@ -348,6 +347,7 @@ class VectorLayer:
         
         res = []
         for index, value in enumerate(values):
+            
             if isinstance(value, float):
                 description = '%G'%value
             else:
@@ -358,7 +358,7 @@ class VectorLayer:
             else:
                 c = colorlist[index%len(colorlist)]
             
-            s = VectorLayer.symbolChange(symbol, color=c, fillColor=c, strokeColor=c)
+            s = VectorLayer.symbolChange(symbol, color=c, fillColor=c, strokeColor=c, featureValue=value)
             
             if isinstance(value, str): rule = "[" + fieldname + "] = '"  + str(value) + "'"
             else:                      rule = '[' + fieldname + '] = '  + str(value)
@@ -435,7 +435,7 @@ class VectorLayer:
                 else:
                     c = colorlist[index%len(colorlist)]
 
-                s = VectorLayer.symbolChange(symbol, color=c, fillColor=c, strokeColor=c, size_multiplier=multiplier)
+                s = VectorLayer.symbolChange(symbol, color=c, fillColor=c, strokeColor=c, size_multiplier=multiplier, featureValue=binvalue)
                 
                 if minvalue is None:
                     rule = "[" + fieldname + "] &lt;= "  + str(maxvalue)
@@ -560,7 +560,7 @@ class VectorLayer:
             if onclick is not None and not disabled: listitem.on_event('click', onclick)
             items.append(listitem)
 
-        legendgroup = v.ListItemGroup(v_model=None, color=settings.color_first, children=items)
+        legendgroup = v.ListItemGroup(v_model=None, children=items)
 
         if len(title) > 0:
             return v.List(dense=True, children=[legendtitle,legendgroup])
@@ -574,7 +574,7 @@ class VectorLayer:
     
     # Change color and other properties of a symbol and returns the modified symbol
     @staticmethod
-    def symbolChange(symbol, color='#ff0000', fillColor='#ff0000', fillOpacity=1.0, strokeColor='#ffff00', strokeWidth=0.5, scalemin=None, scalemax=None, size_multiplier=1.0):
+    def symbolChange(symbol, color='#ff0000', fillColor='#ff0000', fillOpacity=1.0, strokeColor='#ffff00', strokeWidth=0.5, scalemin=None, scalemax=None, size_multiplier=1.0, featureValue=None):
         newsymbol = []
         for layer in symbol:
             newlayer = []
@@ -601,6 +601,9 @@ class VectorLayer:
 
                 if value == 'SCALE-MAX':
                     value = scalemax
+                    
+                if isinstance(value, str) and 'FEATURE-VALUE' in value:
+                    value = value.replace('FEATURE-VALUE',str(featureValue))
 
                 if size_multiplier != 1.0:
                     if symbolizer == 'MarkersSymbolizer' and (attribute == 'width' or attribute == 'height'):
@@ -823,12 +826,20 @@ class VectorLayer:
                     for symbolizer in symbolizers:
                         style += '\n            <%s'%symbolizer
 
+                        elem_value = ''
                         # For all the elemnts of the layer
                         for elem in layer:
                             if elem[0] == symbolizer:
-                                style += ' %s="%s"'%(elem[1], str(elem[2]))
+                                if elem[1] == 'elem-value':
+                                    elem_value = str(elem[2])
+                                else:
+                                    style += ' %s="%s"'%(elem[1], str(elem[2]))
 
-                        style += '/>'
+                        if len(elem_value) > 0:
+                            style += '>' + elem_value + '</' + symbolizer + '>'
+                        else:
+                            style += '/>'
+                            
                     style += '\n        </Rule>'
             
             style += '\n    </Style>'
@@ -868,6 +879,7 @@ class VectorLayer:
                 
             features = '\n'.join(['"%s"'%x for x in self.wktlist])
 
+            # Retrieve the list of all fields
             fields = set()
             for p in self.properties:
                 fields.update(set(p.keys()))

@@ -1,4 +1,5 @@
-BASE_URL = 'http://141.227.140.197/'
+#BASE_URL = 'http://141.227.140.197/'
+BASE_URL = 'https://tilegeo.azurewebsites.net/'
 
 PREFIX = 'dts/'
 
