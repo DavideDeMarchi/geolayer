@@ -6,12 +6,12 @@ with open("README.md", 'r') as f:
 setup(
    name='geolayer',
    version='0.0.3',
-   description='TODO short description',
-   license="TODO",
+   description='Geospatial data visualization',
+   license="EUPL1.2",
    long_description=long_description,
-   author='TODO',
-   author_email='TODO',
-   url="TODO",
+   author='Davide De Marchi',
+   author_email='Davide.DE-MARCHI@ec.europa.eu',
+   url="https://geolayer.readthedocs.io/en/latest/",
    packages=['geolayer'],
    install_requires=['wheel',],
 )

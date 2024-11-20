@@ -103,10 +103,13 @@ class CompositeLayer:
     #####################################################################################################################################################
     
     # Returns the url to display the layer
-    def tileUrl(self, file_format='png'):
+    def tileUrl(self, file_format='png', cache=False):
         procid = self.toLayer()
         if not procid is None:
-            return '%s%s/{z}/{x}/{y}.%s'%(settings.TILE_ENDPOINT, procid, file_format)
+            if cache:
+                return '%s%s/{z}/{x}/{y}.%s'%(settings.TILE_CACHE_ENDPOINT, procid, file_format)
+            else:
+                return '%s%s/{z}/{x}/{y}.%s'%(settings.TILE_ENDPOINT, procid, file_format)
 
      
     # Save the layer in Redis and returns the procid
