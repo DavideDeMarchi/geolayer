@@ -1,6 +1,6 @@
 geolayer library
 
-version: V0.0.1 
+version: V0.0.4
 ========================================================================================
 
 Copyright (C) European Union 2024
@@ -31,7 +31,7 @@ ipyleaflet      -------> MIT
 GDAL            -------> Apache 2.0
 requests        -------> Apache 2.0
 urllib3         -------> MIT
-Roboto font   	-------> Apache 2.0
+Roboto font     -------> Apache 2.0
 voila           -------> BSD-3-Clause
 Python          -------> PSF
 

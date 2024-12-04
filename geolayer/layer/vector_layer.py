@@ -191,7 +191,7 @@ class VectorLayer:
                 epsg=4326,
                 proj='',             # To be used for projections that do not have an EPSG code (if not empty it is used instead of the passed epsg)
                 geomtype='Polygon',
-                geometry_field='',
+                geometry_field='geometry',
                 geometry_table='',
                 extents=''):
         
@@ -347,7 +347,6 @@ class VectorLayer:
         
         res = []
         for index, value in enumerate(values):
-            
             if isinstance(value, float):
                 description = '%G'%value
             else:
@@ -824,7 +823,7 @@ class VectorLayer:
                     layer = symbol[i]
 
                     # Distinct symbolizers
-                    symbolizers = set([elem[0] for elem in layer])
+                    symbolizers = sorted(list(set([elem[0] for elem in layer])))
 
                     for symbolizer in symbolizers:
                         style += '\n            <%s'%symbolizer
@@ -870,7 +869,35 @@ class VectorLayer:
         # Add specific settings of the three formats
         if self.isPostgis:
         
-            pass # TODO!
+            srs = "epsg:%d"%self.postgis_epsg
+            if self.postgis_proj is not None and len(self.postgis_proj) > 0:
+                srs = self.postgis_proj
+                
+            layer = '\n    <Layer name="%s" srs="%s">'%(self.md5, srs)
+            
+            # Write the styles
+            for i in range(numstyles):
+                name = '%s_%d'%(self.md5, i)
+                layer += '\n        <StyleName>%s</StyleName>'%name
+                
+            # Write the Datasource
+            layer += '\n        <Datasource>'
+            layer += '\n            <Parameter name="type">postgis</Parameter>'
+            layer += '\n            <Parameter name="host">%s</Parameter>'%self.postgis_host
+            layer += '\n            <Parameter name="port">%d</Parameter>'%self.postgis_port
+            layer += '\n            <Parameter name="dbname">%s</Parameter>'%self.postgis_dbname
+            layer += '\n            <Parameter name="user">%s</Parameter>'%self.postgis_user
+            layer += '\n            <Parameter name="password">%s</Parameter>'%self.postgis_password
+            layer += '\n            <Parameter name="table">(%s)</Parameter>'%self.postgis_query
+            layer += '\n            <Parameter name="persist_connection">false</Parameter>'
+            layer += '\n            <Parameter name="estimate_extent">true</Parameter>'
+            layer += '\n            <Parameter name="extent">%s</Parameter>'%self.postgis_extents
+            layer += '\n            <Parameter name="geometry_field">%s</Parameter>'%self.postgis_geometry_field
+            layer += '\n            <Parameter name="geometry_table">%s</Parameter>'%self.postgis_geometry_table
+            layer += '\n        </Datasource>'
+
+            layer += '\n    </Layer>'
+            
         
         elif self.isWKT:
             layer = '\n    <Layer name="%s" srs="+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs">'%self.md5

@@ -1,0 +1,11 @@
+# List all tables of a schema
+SELECT * FROM information_schema.tables WHERE table_schema = 'public';
+
+# List all indexes of a table
+select * from pg_indexes where tablename = 'points25' AND schemaname = 'public';
+
+# Create a spatial index
+CREATE INDEX idx_geometry ON public.points25 USING gist (geometry);
+
+# Test if a table has a spatial index
+EXPLAIN ANALYSE SELECT * FROM public.points25 WHERE ST_DWithin('SRID=4326;POINT(1 1)',geom,1);
