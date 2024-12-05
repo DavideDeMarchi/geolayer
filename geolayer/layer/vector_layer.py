@@ -636,7 +636,7 @@ class VectorLayer:
     def print(self):
         if self.isPostgis:
             print("TILEGEO vector layer POSTGIS:")
-            print("   procid:         %s"%str(self.procid))
+            #print("   procid:         %s"%str(self.procid))
             print("   host:           %s"%self.postgis_host)
             print("   port:           %d"%self.postgis_port)
             print("   dbname:         %s"%self.postgis_dbname)
@@ -655,7 +655,7 @@ class VectorLayer:
             print("   properties:     %s"%str(self.properties))
         else:
             print("TILEGEO vector layer FILE:")
-            print("   procid:         %s"%str(self.procid))
+            #print("   procid:         %s"%str(self.procid))
             print("   filepath:       %s"%self.filepath)
             print("   layer:          %s"%self.layer)
             print("   epsg:           %d"%self.epsg)

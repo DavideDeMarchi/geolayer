@@ -431,7 +431,7 @@ class RasterLayer:
     # Print info on instance    
     def print(self):
         print("TILEGEO raster layer instance:")
-        print("   procid:         %s"%str(self.procid))
+        #print("   procid:         %s"%str(self.procid))
         print("   filepath:       %s"%self.filepath)
         print("   band:           %d"%self.band)
         if self.epsg is None: print("   epsg:           None")

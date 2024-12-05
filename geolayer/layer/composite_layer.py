@@ -81,7 +81,7 @@ class CompositeLayer:
     # Print info on instance    
     def print(self):
         print("TILEGEO composite layer instance:")
-        print("   procid: %s"%str(self.procid))
+        #print("   procid: %s"%str(self.procid))
         for layer, comp in zip(self.layers, self.composition_operations):
             print("   layer: %s (%s)"%(layer.MD5(), comp))
     
