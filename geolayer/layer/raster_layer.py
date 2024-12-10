@@ -291,7 +291,8 @@ class RasterLayer:
             else:
                 raise CustomException("epsg not found in filepath")
         else:
-            raise rasterAPI.InvalidBDAPAnswerException(url=url)
+            raise rasterAPI.InvalidBDAPAnswerException(url=filepath)
+
 
             
             
@@ -403,6 +404,100 @@ class RasterLayer:
         else:
             raise CustomException("Not all input bands %s, %s and %s are present in input file(s)"%(str(bandR),str(bandG),str(bandB)))
 
+            
+            
+    #####################################################################################################################################################
+    # Display an index calculated from 2 bands (b1 - b2)/(b1 + b2)
+    #####################################################################################################################################################
+    @classmethod
+    def index(cls,
+              filepath1,       # Full path of the raster file 1
+              filepath2,       # Full path of the raster file 2
+              band1=1,
+              band2=1,
+              epsg=None,       # Forced epsg that has prevalence over the epsg read from the raster files
+              proj='',         # To be used for projections that do not have an EPSG code (if not empty it is used instead of the passed epsg)
+              scalemin=0,
+              scalemax=0.75,
+              colorlist=['#784519', '#ffb24a', '#ffeda6', '#ade85e', '#87b540', '#039c00', '#016400', '#015000'],  # Standard NDVI palette
+              scaling='near',
+              opacity=1.0):
+        
+        info1 = rasterAPI.rasterInfo(filepath1, False)
+        info2 = rasterAPI.rasterInfo(filepath2, False)
+        
+        if 'geotransform' in info1 and 'bands' in info1:
+            geotransform = info1['geotransform']
+            if 'epsg' in info1 or 'proj4' in info1:
+                if epsg is None and 'epsg' in info1:
+                    epsg = info1['epsg']
+                if len(proj) == 0 and 'proj4' in info1:
+                    proj = info1['proj4']
+
+            bands = info1['bands']
+            if str(band1) in bands:
+                b1 = bands[str(band1)]
+                w = w1 = b1['x_size']
+                h = h1 = b1['y_size']
+                datatype1 = b1['type']
+                    
+                if 'bands' in info2:
+                    bands = info2['bands']
+                    if str(band2) in bands:
+                        b2 = bands[str(band2)]
+                        w2 = b2['x_size']
+                        h2 = b2['y_size']
+                        datatype2 = b2['type']
+                            
+                        filepath = '''vrt:<VRTDataset rasterXSize="%d" rasterYSize="%d">
+  <GeoTransform>%s</GeoTransform>
+  <VRTRasterBand dataType="Float32" band="1" subClass="VRTDerivedRasterBand">
+    <SimpleSource>
+      <SourceFilename relativeToVRT="0">%s</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="%d" RasterYSize="%d" DataType="%s" />
+      <SrcRect xOff="0" yOff="0" xSize="%d" ySize="%d" />
+      <DstRect xOff="0" yOff="0" xSize="%d" ySize="%d" />
+    </SimpleSource>
+    <SimpleSource>
+      <SourceFilename relativeToVRT="0">%s</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="%d" RasterYSize="%d" DataType="%s" />
+      <SrcRect xOff="0" yOff="0" xSize="%d" ySize="%d" />
+      <DstRect xOff="0" yOff="0" xSize="%d" ySize="%d" />
+    </SimpleSource>
+    <PixelFunctionLanguage>Python</PixelFunctionLanguage>
+    <PixelFunctionType>norm_diff</PixelFunctionType>
+    <PixelFunctionCode>
+<![CDATA[
+import numpy as np
+def norm_diff(in_ar, out_ar, xoff, yoff, xsize, ysize, raster_xsize, raster_ysize, buf_radius, gt, **kwargs):
+    out_ar[:] = np.nan_to_num(np.divide( np.subtract(in_ar[0],in_ar[1]), np.sum(in_ar,axis=0)), nan=-99999.0)
+]]>
+    </PixelFunctionCode>
+  </VRTRasterBand>
+</VRTDataset>''' % (w1,h1, geotransform, filepath1, w1,h1,datatype1,w1,h1,w1,h1, filepath2, w2,h2,datatype1,w2,h2,w1,h1)
+                        
+                        instance = cls(filepath=filepath, band=1, epsg=epsg, proj=proj, identify_integer=False, identify_digits=4)
+                        instance.symbolizer(scaling=scaling, opacity=opacity)
+                        instance.colorizer()
+                        if scalemin is None: scalemin = 0.0
+                        if scalemax is None: scalemax = 0.75
+                        d = scalemax - scalemin
+                        instance.color(scalemin - 10*d, colorlist[0])
+                        instance.colorlist(scalemin, scalemax, colorlist)
+                        instance.color(scalemax + 10*d, colorlist[-1])
+
+                        instance.minvalue = scalemin
+                        instance.maxvalue = scalemax
+
+                        return instance
+                    else:
+                        raise CustomException("Band %s not found in filepath2: %s"%(band2,filepath2))
+            else:
+                raise CustomException("Band %s not found in filepath1: %s"%(band1,filepath1))
+        else:
+            raise CustomException("Geotransform not present in filepath1: %s"%filepath1)
             
             
     #####################################################################################################################################################
