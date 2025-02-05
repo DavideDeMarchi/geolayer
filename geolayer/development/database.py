@@ -26,7 +26,11 @@ from configparser import ConfigParser
 from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
 import pandas as pd
-import geopandas as gpd
+
+try:
+    import geopandas as gpd
+except:
+    pass
 
 # Vois imports
 from vois.vuetify import dialogGeneric
