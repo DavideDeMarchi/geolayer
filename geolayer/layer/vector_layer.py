@@ -1262,6 +1262,10 @@ class VectorLayer:
         
     # Print info on instance    
     def print(self):
+        """
+        Prints a textual description of the class instance.
+        """
+        
         if self.isPostgis:
             print("TILEGEO vector layer POSTGIS:")
             #print("   procid:         %s"%str(self.procid))
@@ -1306,6 +1310,25 @@ class VectorLayer:
     
     # Identify: returns a string
     def identify(self, lon, lat, tolerance=0.0):
+        """
+        Given in input a geographic coordinate  and a zoom level, returns a string containing info on the attributes of the feature under the (lat,lon) position.
+
+        
+        Parameters
+        ----------
+        lon : float
+            Longitude coordinate of the point for which to perform the identify operation.
+        lat : float
+            Latitude coordinate of the point for which to perform the identify operation.
+        zoom : int
+            Zoom level in the range [0,20] to use for the identify operation.
+        
+        Returns
+        --------
+        res : str
+            The string containing the attribute names and values of the identified feature.
+        """
+        
         while lon < -180.0: lon += 360.0
         while lon >  180.0: lon -= 360.0
         
@@ -1315,6 +1338,66 @@ class VectorLayer:
 
     # onclick called by a Map.Map instance
     def onclick(self, m, lon, lat, zoom):
+        """
+        Callback onclick called by a Map.Map instance when the user clicks on the map.
+        
+        Parameters
+        ----------
+        m : instance of vois Map.Map class
+            Map widget instance on which the click event occurs.
+        lon : float
+            Longitude coordinate of the point for which to perform the identify operation.
+        lat : float
+            Latitude coordinate of the point for which to perform the identify operation.
+        zoom : int
+            Zoom level in the range [0,20] to use for the identify operation.
+
+        Example
+        -------
+        Display of a shapefile with identify operation on click event::
+        
+            # Import libraries
+            from IPython.display import display
+            from vois.geo import Map
+            from geolayer.layer.vector_layer import VectorLayer
+
+            # Create a VectorLayer instance from a file dataset (shapefile)
+            vlayer = VectorLayer.file('/data/NUTS_RG_03M_2021_4326_0.shp', epsg=4326)
+
+            # Define a parametric symbol ('FILL-COLOR' to be substituted with the actual color)
+            symbol = [
+                        [
+                           ["PolygonSymbolizer", "fill", 'FILL-COLOR'],
+                           ["PolygonSymbolizer", "fill-opacity", 0.8],
+                           ["LineSymbolizer", "stroke", "#000000"],
+                           ["LineSymbolizer", "stroke-width", 1.0]
+                        ]
+            ]
+
+            # Remove default symbology
+            vlayer.symbologyClear()
+            
+            # Assign a red symbol to all features
+            vlayer.symbologyAdd(symbol=VectorLayer.symbolChange(symbol, fillColor='red'))
+            
+            # Assign a green symbol to a subset of the features
+            vlayer.symbologyAdd(rule="[CNTR_CODE] = 'IT'",
+                                symbol=VectorLayer.symbolChange(symbol, fillColor='#00aa00'))
+
+            # Create a Map
+            m = Map.Map()
+            
+            # Add the layer to the map
+            m.addLayer(vlayer)
+            
+            # Set the identify operation
+            m.onclick = vlayer.onclick
+            
+            # Display the map
+            display(m)
+            
+        The default implementation of the VectorLayer.onclick method calls the VectorLayer.identify method and displays a popup on the map showing the textual content returned by the identify method.
+        """
         
         tile_dimension_in_degree = 360.0/math.pow(2, zoom)
         tolerance = tile_dimension_in_degree / 100.0
@@ -1348,6 +1431,21 @@ class VectorLayer:
 
     @property
     def identify_fields(self):
+        """
+        Get/Set the list of attributes to return on an identify operation (click on a vector feature).
+        
+        Returns
+        --------
+        list_of_attributes : list
+            Names of the attributes to return on an identify operation
+
+        Example
+        -------
+        Programmatically change the list of attributes::
+            
+            vlayer.identify_fields = ['attribute1', 'attribute2']
+            print(vlayer.identify_fields)
+        """
         return self._identify_fields
         
     @identify_fields.setter
@@ -1357,6 +1455,21 @@ class VectorLayer:
 
     @property
     def identify_width(self):
+        """
+        Get/Set the width of the popup widget that opens when an identify operation is done on a feature of the vector layer.
+        
+        Returns
+        --------
+        width : str
+            Width in pixels or any other CSS units of the popup widget (default is '180px')
+
+        Example
+        -------
+        Programmatically change the width of the identify popup::
+            
+            vlayer.identify_width = '3vw'
+            print(vlayer.identify_width)
+        """
         return self._identify_width
         
     @identify_width.setter
@@ -1369,8 +1482,47 @@ class VectorLayer:
     #####################################################################################################################################################
     
     # Returns an instance of ipyleaflet.TileLayer
-    def tileLayer(self, max_zoom=22, file_format='png'):
-        url = self.tileUrl(file_format=file_format)
+    def tileLayer(self, max_zoom=22, file_format='png', cache=False):
+        """
+        Creates an ipyleaflet.TileLayer object from an instance of VectorLayer, to be added to a Map for display.
+        
+        Parameters
+        ----------
+        max_zoom : int, optional
+            Maximum zoom level to define for the layer (default is 22)
+        file_format : str, optional
+            Format of the tiles generated by the tilegeo server to serve the raster dataset in WMTS (default is 'png')
+        cache : bool, optional
+            Flag that enables the server-side caching of the tiles (default is False)
+        
+        Returns
+        --------
+        tlayer : ipyleaflet.TileLayer
+            Instance of ipyleaflet.TileLayer to be added to a Map
+
+        Example
+        -------
+        Create an ipyleaflet.TileLayer instance::
+        
+            # Import libraries
+            from IPython.display import display
+            import ipyleaflet
+            from geolayer.layer.raster_layer import VectorLayer
+
+            # Create a VectorLayer instance
+            vlayer = VectorLayer.file('/data/NUTS_RG_03M_2021_4326_0.shp', epsg=4326)
+            
+            # Create an ipyleaflet Map
+            m = ipyleaflet.Map()
+            
+            # Add the layer to the map
+            m.add(vlayer.tileLayer())
+            
+            # Display the map
+            display(m)
+        """
+        
+        url = self.tileUrl(file_format=file_format, cache=cache)
         if not url is None:
             return ipyleaflet.TileLayer(url=url, max_zoom=max_zoom, max_native_zoom=max_zoom)
 
@@ -1381,6 +1533,21 @@ class VectorLayer:
     
     # Returns the url to display the layer
     def tileUrl(self, file_format='png', cache=False):
+        """
+        Returns the url string that can be used to display the layer.
+        
+        Parameters
+        ----------
+        file_format : str, optional
+            Format of the tiles generated by the tilegeo server to serve the raster dataset in WMTS (default is 'png')
+        cache : bool, optional
+            Flag that enables the server-side caching of the tiles (default is False)
+            
+        Returns
+        --------
+        url : str
+            URL to be used to display the layer in a WMTS client, for instance ipyleaflet.Map widget, by creating a ipyleaflet.TileLayer instance from the returned URL string.
+        """
         procid = self.toLayer()
         if not procid is None:
             if cache:
@@ -1391,6 +1558,9 @@ class VectorLayer:
         
     # Save the layer in Redis and returns the procid
     def toLayer(self):
+        """
+        Saves the layer in Redis and returns the procid.
+        """
         xml = self.xml()
         self.procid = redisAPI.redisStore(xml)
         return self.procid
@@ -1402,6 +1572,9 @@ class VectorLayer:
     
     # Return the full XML in Mapnik syntax
     def xml(self, compositing='src-over'):
+        """
+        Returns the full XML in Mapnik syntax.
+        """
         
         self.md5 = self.MD5()
         
@@ -1601,6 +1774,9 @@ class VectorLayer:
 # Generate an image from a symbol
 #####################################################################################################################################################
 def symbol2Image(symbol=[], size=1, feature='Point', clipdimension=999, showborder=False):
+    """
+    Generate an image from a symbol.
+    """
 
     doclip = False
     if feature == 'Line' or feature == 'Polyline':
