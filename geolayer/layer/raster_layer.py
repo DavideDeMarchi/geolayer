@@ -81,6 +81,25 @@ def unscaled(scaledvalue, ratio, offset):
 # Class RasterLayer to create server-side raster display
 #####################################################################################################################################################
 class RasterLayer:
+    """
+    Raster datasets visualization. Class to display any type of raster dataset format managed by the GDAL library.
+
+    An instance of this class can be created using one of these class methods:
+    
+    - :py:meth:`~RasterLayer.single`
+    - :py:meth:`~RasterLayer.rgb`
+    - :py:meth:`~RasterLayer.rgb_multiple`
+    - :py:meth:`~RasterLayer.index`
+    
+    To define the visual appearance of rasters, these methods can be used:
+    
+    - :py:meth:`~RasterLayer.symbolizer`
+    - :py:meth:`~RasterLayer.colorizer`
+    - :py:meth:`~RasterLayer.color`
+    - :py:meth:`~RasterLayer.colorlist`
+    - :py:meth:`~RasterLayer.colormap`
+
+    """
     
     # Initialization
     def __init__(self,
@@ -131,7 +150,7 @@ class RasterLayer:
     
 
     #####################################################################################################################################################
-    # Initialization for displaying a single band from a file (any of the formats managed by GDAL). Also files stored in redis, by using "redis:"+key
+    # Initialization for displaying a single band from a file (any of the formats managed by GDAL)
     #####################################################################################################################################################
     @classmethod
     def single(cls,
@@ -144,6 +163,61 @@ class RasterLayer:
                identify_integer=False,       # True if the identify operation should convert pixels values to integer
                identify_digits=6,            # Number of digits for identify of float values
                identify_label='Value'):      # Label for identify operation
+        """
+        Single layer raster display. 
+        
+        Parameters
+        ----------
+        filepath : str
+            File path of the raster to display.
+        band : int, optional
+            Band number (from 1 to n) to display (default is 1).
+        epsg : int, optional
+            EPSG code of the coordinate system to use (default is None which causes the reading of the info from the input file).
+        proj : str, optional
+            Proj4 string of the coordinate system to use (default is the empty string). If a non-empty string is passed, the proj parameter has prevalence over the epsg code.
+        nodata : float, optional
+            Value to be considered as absence of data (default is None, which causes the reading of the info from the input file).
+        identify_dict : dict, optional
+            Dictionary to convert integer pixel values to strings (e.g. classes names). Default is None.
+        identify_integer : bool, optional
+            True if the identify operation should convert pixels values to integer (default is False).
+        identify_digits : int, optional
+            Number of digits for the identify of float values (default is 6).
+        identify_label : str, optional
+            Label for identify operation (default is 'Value')
+            
+        Example
+        -------
+        Display of a single band from a VRT file::
+        
+            # Import libraries
+            from IPython.display import display
+            from vois.geo import Map
+            from geolayer.layer.raster_layer import RasterLayer
+
+            # Create a single RasterLayer istance to display the first band of a VRT file
+            ly = RasterLayer.single('/data/SWF_2018_005m_03035_V1_0.vrt', 
+                                    band=1, epsg=3035, nodata=0.0)
+                                    
+            # Display all pixels having value 1 with a pale green color
+            # (see colorizer() and color() for a complete description)
+            ly.color(value=1.0, color="#cefc20", mode="exact")
+
+            # Create a Map
+            m = Map.Map(zoom=14, basemapindex=1)
+            
+            # Add the layer to the map
+            m.addLayer(ly)
+            
+            # Set the identify operation
+            m.onclick = ly.onclick
+            
+            # Display the map
+            display(m)
+            
+        .. image:: figures/single.png
+        """
     
         if epsg is None and len(proj) == 0:
             info = RasterLayer.info(filepath)
@@ -177,6 +251,68 @@ class RasterLayer:
             scalemax=None,   # Single float or array of 3 floats
             scaling='near',
             opacity=1.0):
+        """
+        RGB composition of three bands of a single raster file dataset. 
+        
+        Parameters
+        ----------
+        filepath : str
+            File path of the raster to display.
+        bandR : int, optional
+            Band number (from 1 to n) to display in the Red channel (default is 1).
+        bandG : int, optional
+            Band number (from 1 to n) to display in the Green channel (default is 2).
+        bandB : int, optional
+            Band number (from 1 to n) to display in the Blue channel (default is 3).
+        epsg : int, optional
+            EPSG code of the coordinate system to use (default is None which causes the reading of the info from the input file).
+        proj : str, optional
+            Proj4 string of the coordinate system to use (default is the empty string). If a non-empty string is passed, the proj parameter has prevalence over the epsg code.
+        nodata : float, optional
+            Value to be considered as absence of data: forced nodata that has prevalence over nodata read from the raster file (default is None).
+        scaling : str, optional
+            Scaling mode (one of 'near', 'fast', 'bilinear', 'bicubic', 'spline16', 'spline36', 'hanning', 'hamming', 'hermite', 'kaiser', 'quadric', 'catrom', 'gaussian', 'bessel', 'mitchell', 'sinc', 'lanczos', 'blackman'). Default is 'near'.
+        scalemin : float or list of 3 floats, optional
+            Minimum scaling value to convert from raster values to the interval [0,255] (default is None)
+        scalemax : float or list of 3 floats, optional
+            Maximum scaling value to convert from raster values to the interval [0,255] (default is None)
+        opacity : float, optional
+            Opacity value (from 0.0 to 1.0) to display the RGB composition with partial transparency (default is 1.0, fully opaque)
+            
+        Example
+        -------
+        Display of a RGB composition from a VRT file::
+        
+            # Import libraries
+            from IPython.display import display
+            from vois.geo import Map
+            from geolayer.layer.raster_layer import RasterLayer
+
+            # Create a RGB composition istance to display bands 3,2,1 of a VRT file
+            ly = RasterLayer.rgb('/data/Hansen_GFC-2019-v1.7_last.vrt',
+                                 nodata=0.0,
+                                 bandR=3,
+                                 bandG=2,
+                                 bandB=1,
+                                 scalemin=[0.0, 0.0, 0.0],
+                                 scalemax=[120.0, 100.0, 105.0],
+                                 scaling='bilinear')
+
+            # Create a Map
+            m = Map.Map()
+            
+            # Add the layer to the map
+            m.addLayer(ly)
+            
+            # Set the identify operation
+            m.onclick = ly.onclick
+            
+            # Display the map
+            display(m)
+        
+            
+        .. image:: figures/rgb.png
+        """
         
         # Format a band inside the VRT
         def formatBand(filepath, DataType, w, h, band_number=1, source_band_number=1, color_interp='Red', nodatastr='', ratio=1.0, offset=0.0):
@@ -314,6 +450,74 @@ class RasterLayer:
                      scalemax=None,   # Single float or array of 3 floats
                      scaling='near',
                      opacity=1.0):
+        """
+        RGB composition of three bands of multiple raster files. 
+        
+        Parameters
+        ----------
+        filepathR : str
+            Full path of the raster file for red band.
+        filepathG : str
+            Full path of the raster file for green band.
+        filepathB : str
+            Full path of the raster file for blue band.
+        bandR : int, optional
+            Band number (from 1 to n) of the filepathR to display in the Red channel (default is 1).
+        bandG : int, optional
+            Band number (from 1 to n) of the filepathG to display in the Green channel (default is 2).
+        bandB : int, optional
+            Band number (from 1 to n) of the filepathB to display in the Blue channel (default is 3).
+        epsg : int, optional
+            EPSG code of the coordinate system to use (default is None which causes the reading of the info from the input file).
+        proj : str, optional
+            Proj4 string of the coordinate system to use (default is the empty string). If a non-empty string is passed, the proj parameter has prevalence over the epsg code.
+        nodata : float, optional
+            Value to be considered as absence of data: forced nodata that has prevalence over nodata read from the raster input files (default is None).
+        scaling : str, optional
+            Scaling mode (one of 'near', 'fast', 'bilinear', 'bicubic', 'spline16', 'spline36', 'hanning', 'hamming', 'hermite', 'kaiser', 'quadric', 'catrom', 'gaussian', 'bessel', 'mitchell', 'sinc', 'lanczos', 'blackman'). Default is 'near'.
+        scalemin : float or list of 3 floats, optional
+            Minimum scaling value to convert from raster values to the interval [0,255] (default is None)
+        scalemax : float or list of 3 floats, optional
+            Maximum scaling value to convert from raster values to the interval [0,255] (default is None)
+        opacity : float, optional
+            Opacity value (from 0.0 to 1.0) to display the RGB composition with partial transparency (default is 1.0, fully opaque)
+            
+        Example
+        -------
+        Display of a RGB composition from a VRT file::
+        
+            # Import libraries
+            from IPython.display import display
+            from vois.geo import Map
+            from geolayer.layer.raster_layer import RasterLayer
+
+            # Create a RGB composition istance to display bands 3,2,1 of a TIFF file
+            ly = RasterLayer.rgb_multiple(filepathR='/data/Hansen_GFC-2019-v1.7_last_20N_060W.tif',
+                                          filepathG='/data/Hansen_GFC-2019-v1.7_last_20N_060W.tif',
+                                          filepathB='/data/Hansen_GFC-2019-v1.7_last_20N_060W.tif',
+                                          nodata=0.0,
+                                          bandR=3,
+                                          bandG=2,
+                                          bandB=1,
+                                          scalemin=[1.0, 0.0, 0.0],
+                                          scalemax=[120.0, 100.0, 105.0],
+                                          scaling='near')
+
+            # Create a Map
+            m = Map.Map()
+            
+            # Add the layer to the map
+            m.addLayer(ly)
+            
+            # Set the identify operation
+            m.onclick = ly.onclick
+            
+            # Display the map
+            display(m)
+        
+            
+        .. image:: figures/rgb_multiple.png
+        """
         
         # Format a band inside the VRT
         def formatBand(filepath, DataType, w, h, band_number=1, source_band_number=1, color_interp='Red', nodatastr='', ratio=1.0, offset=0.0):
@@ -422,6 +626,63 @@ class RasterLayer:
               colorlist=['#784519', '#ffb24a', '#ffeda6', '#ade85e', '#87b540', '#039c00', '#016400', '#015000'],  # Standard NDVI palette
               scaling='near',
               opacity=1.0):
+        """
+        On-th-fly visualization of an index (i.e. NDVI) calculated from two raster bands (b1 and b2) using the formula (b1 - b2)/(b1 + b2).
+        
+        Parameters
+        ----------
+        filepath1 : str
+            Full path of the raster file for the first band.
+        filepath2 : str
+            Full path of the raster file for the second band.
+        band1 : int, optional
+            Band number (from 1 to n) of the filepath1 to display as the b1 band in the index calculation (default is 1).
+        band2 : int, optional
+            Band number (from 1 to n) of the filepath2 to display as the b2 band in the index calculation (default is 1).
+        epsg : int, optional
+            EPSG code of the coordinate system to use (default is 4326, the geographical coordinates).
+        proj : str, optional
+            Proj4 string of the coordinate system to use (default is the empty string). If a non-empty string is passed, the proj parameter has prevalence over the epsg code.
+        scaling : str, optional
+            Scaling mode (one of 'near', 'fast', 'bilinear', 'bicubic', 'spline16', 'spline36', 'hanning', 'hamming', 'hermite', 'kaiser', 'quadric', 'catrom', 'gaussian', 'bessel', 'mitchell', 'sinc', 'lanczos', 'blackman'). Default is 'near'.
+        scalemin : float, optional
+            Minimum scaling value to convert from index values to the interval [0,255] (default is 0.0)
+        scalemax : float or list of 3 floats, optional
+            Maximum scaling value to convert from index values to the interval [0,255] (default is 0.75)
+        opacity : float, optional
+            Opacity value (from 0.0 to 1.0) to display the index (default is 1.0, fully opaque)
+            
+        Example
+        -------
+        Display of NDVI index from a Sentinel-2 product::
+        
+            # Import libraries
+            from IPython.display import display
+            from vois.geo import Map
+            from geolayer.layer.raster_layer import RasterLayer
+
+            # Display NDVI index calculated from bands B08 and B04 of a Sentinel-2 product
+            ly = RasterLayer.index(filepath1='/data/S2A_MSIL2A_.../R10m/T33TUJ_20230910T100601_B08_10m.jp2',
+                                   filepath2='/data/S2A_MSIL2A_.../R10m/T33TUJ_20230910T100601_B04_10m.jp2',
+                                   band1=1,
+                                   band2=1,
+                                   scaling='near')
+
+            # Create a Map
+            m = Map.Map()
+            
+            # Add the layer to the map
+            m.addLayer(ly)
+            
+            # Set the identify operation
+            m.onclick = ly.onclick
+            
+            # Display the map
+            display(m)
+        
+            
+        .. image:: figures/rgb.png
+        """
         
         info1 = rasterAPI.rasterInfo(filepath1, False)
         info2 = rasterAPI.rasterInfo(filepath2, False)
@@ -507,6 +768,31 @@ def norm_diff(in_ar, out_ar, xoff, yoff, xsize, ysize, raster_xsize, raster_ysiz
     # Returns info dictionary on a raster file
     @staticmethod
     def info(filepath):
+        """
+        Static method to return a dict containing info on a raster file.
+        
+        Parameters
+        ----------
+        filepath : str
+            Full path of the raster file.
+        
+        Example
+        -------
+        Request info on a VRT raster file::
+        
+            # Import libraries
+            from IPython.display import display
+            from geolayer.layer.raster_layer import RasterLayer
+    
+            info = RasterLayer.info('/data/2018_ESACCI_BIOMASS-L4-AGB.vrt')
+            display(info)
+            
+        .. figure:: figures/rasterlayer_info.png
+           :scale: 100 %
+           :alt: Dictionary returned by the call to info method
+            
+        """
+        
         return rasterAPI.rasterInfo(filepath, request_stats=True, detailed_stats=False)
     
             
@@ -525,6 +811,10 @@ def norm_diff(in_ar, out_ar, xoff, yoff, xsize, ysize, raster_xsize, raster_ysiz
         
     # Print info on instance    
     def print(self):
+        """
+        Prints a textual description of the class instance.
+        """
+        
         print("TILEGEO raster layer instance:")
         #print("   procid:         %s"%str(self.procid))
         print("   filepath:       %s"%self.filepath)
@@ -558,6 +848,18 @@ def norm_diff(in_ar, out_ar, xoff, yoff, xsize, ysize, raster_xsize, raster_ysiz
     def symbolizer(self,
                    scaling="near",
                    opacity=1.0):
+        """
+        Initialize the raster rendering by providing settings for single-band display. The geolayer library uses Mapnik to render a raster dataset. See the  see `Raster Symbolizer description <https://github.com/mapnik/mapnik/wiki/RasterSymbolizer>`_ for info.
+        
+        After a RasterLayer instance is created, this method must be called only if a non-default setting is needed. In other words, if the created RasterLayer instance is going to be displayed using near-neighbour interpolation and fully opaque, the call to simbolizer() method can be avoided.
+        
+        Parameters
+        ----------
+        scaling : str, optional
+            Scaling mode (one of 'near', 'fast', 'bilinear', 'bicubic', 'spline16', 'spline36', 'hanning', 'hamming', 'hermite', 'kaiser', 'quadric', 'catrom', 'gaussian', 'bessel', 'mitchell', 'sinc', 'lanczos', 'blackman'). Default is 'near'.
+        opacity : float, optional
+            Opacity value (from 0.0 to 1.0) to display raster with partial transparency (default is 1.0, fully opaque).
+        """
 
         self.scaling = scaling
         self.opacity = opacity
@@ -568,6 +870,69 @@ def norm_diff(in_ar, out_ar, xoff, yoff, xsize, ysize, raster_xsize, raster_ysiz
                   default_mode="linear",
                   default_color="transparent",
                   epsilon=1.5e-07):
+        """
+        Create a colorizer descriptor to define how the values of a single-band raster are transformed into colors. See the `Raster Colorizer help page <https://github.com/mapnik/mapnik/wiki/RasterColorizer>`_ for more details.
+        
+        The colorizer works in the following way:
+
+        - It has an ordered list of *stops* that describe how to translate an input value to an output color.
+        - A stop has a value, which marks the stop as being applied to input values from its value, up until the next stops value.
+        - A stop has a mode, which says how the input value will be converted to a colour.
+        - A stop has a color
+        - The colorizer also has default color, which input values will be converted to if they don't match any stops.
+        - The colorizer also has a default mode, which can be inherited by the stops.
+        - The colorizer also has an epsilon value, which is used in the exact mode.
+        
+        **Modes**
+        
+        The available modes are *inherit*, *discrete*, *linear*, and *exact*.
+        
+        **inherit** is only valid for stops, and not the default colorizer mode. It means that the stop will inherit the mode of the containing colorizer.
+
+        **discrete** causes all input values from the stops value, up until the next stops value (or forever if this is the last stop) to be translated to the stops color.
+
+        **linear** causes all input values from the stops value, up until the next stops value to be translated to a color which is linearly interpolated between the two stops colors. If there is no next stop, then the discrete mode will be used.
+
+        **exact** causes an input value which matches the stops value to be translated to the stops color. The colorizers epsilon value can be used to make the match a bit fuzzy (in the 'greater than' direction).
+
+        The colorizer method sets the initial parameters of the Colorizer. To add one or more stops to the colorizer the following methods can be called:
+        
+        - :py:meth:`~RasterLayer.color`
+        - :py:meth:`~RasterLayer.colorlist`
+        - :py:meth:`~RasterLayer.colormap`
+        
+        After a rasterlayer instance is created, this method must be called only if a non-default setting is needed. In other words, if the created rasterlayer instance is going to be displayed using the "linear" mode and the "transparent" default color, the call to the colorizer() method can be avoided.
+        
+        Parameters
+        ----------
+        default_mode : str, optional
+            Default colorizer mode that can be inherited by all subsequent stops in case the *inherit* mode is selected. Default is 'linear'.
+        default_color : str, optional
+            Starting color of the first step of the colorizer. Default is 'transparent'.
+        epsilon : float, optional
+            Error threshold used in the exact mode to decide if a pixel value matches a stop value. Default is 1.5e-07.
+
+        Examples
+        --------
+        To visualize a raster mask band by assigning a color to the "valid" pixels::
+        
+            ly = RasterLayer.single('...', band=1, epsg=3035, nodata=0.0)
+            ly.color(value=1.0, color="#cefc20", mode="exact")
+            
+        To visualize a raster band by assigning a palette of colors to a range of pixel values::
+            
+            ly = RasterLayer.single('...', band=1, epsg=3035, nodata=0.0)
+            ly.colorlist(0.0, 100.0, ['#ff0000', '#0000ff'])
+
+        To visualize a raster band by using a mapping of pixel values to specific colors::
+            
+            ly = RasterLayer.single('...', band=1, epsg=3035, nodata=0.0)
+            ly.colormap({1.0: 'red', 
+                         2.0: '#ffff00',
+                         3.0: '#00ffff',
+                         4.0: '#0000ff',
+                         5.0: '#aaffaa'})
+        """
 
         self.default_mode  = default_mode
         self.default_color = default_color
@@ -583,6 +948,18 @@ def norm_diff(in_ar, out_ar, xoff, yoff, xsize, ysize, raster_xsize, raster_ysiz
               value,            # Numerical value
               color="red",      # name of color or "#rrggbb"
               mode="linear"):   # "discrete", "linear" or "exact"
+        """
+        Add a colorizer stop. Read the description of the method :py:meth:`~RasterLayer.colorizer` or open the `Raster Colorizer help page <https://github.com/mapnik/mapnik/wiki/RasterColorizer>`_ for more details.
+        
+        Parameters
+        ----------
+        value : float
+            Numerical value of the raster pixel at which the stop begins to be applied.
+        color : str, optional
+            Color assigned to the stop. If not specified, the colorizers default_color will be used. A name of color or its exadecimal representation '#rrggbb' can be used. Default is 'red'.
+        mode : str, optional
+            Stop mode: defines how the assignment of colors is implemented. Possible modes are 'discrete', 'exact' or 'linear' (default).
+        """
         
         self.values.append(value)
         self.colors.append(color)
@@ -591,6 +968,19 @@ def norm_diff(in_ar, out_ar, xoff, yoff, xsize, ysize, raster_xsize, raster_ysiz
         
     # Add a colorlist linearly scaled from a min to a max value
     def colorlist(self, scalemin, scalemax, colorlist):
+        """
+        Add a series of colorizer stops, one for each item of a list of colors, so that the pixel values inside a range [scalemin, scalemax] are linearly assigned to the colors of the list. Read the description of the method :py:meth:`~RasterLayer.colorizer` for an example.
+
+        Parameters
+        ----------
+        scalemin : float
+            Minimum pixel value to define the range of pixel values assigned to the list or colors.
+        scalemin : float
+            Maximum pixel value to define the range of pixel values assigned to the list or colors.
+        colorlist : list of str
+            List of strings defining the colors. Common names of colors can be used (i.e 'red') or their exadecimal RGB representation '#rrggbb'.
+        """
+        
         ci = colors.colorInterpolator(colorlist)
         num_classes = len(colorlist)
         values = np.linspace(scalemin, scalemax, num_classes)
@@ -601,6 +991,17 @@ def norm_diff(in_ar, out_ar, xoff, yoff, xsize, ysize, raster_xsize, raster_ysiz
 
     # Add a dictionary having key: raster values, value: colors
     def colormap(self, values2colors, mode='linear'):
+        """
+        Add a series of colorizer stops from a dictionary that maps some pixel values to specific colors. Read the description of the method :py:meth:`~RasterLayer.colorizer` for an example.
+
+        Parameters
+        ----------
+        values2colors : dict
+            Dict with pixel values as keys and colors as values.
+        mode : str, optional
+            Stop mode: defines how the assignment of colors is implemented. Possible modes are 'discrete', 'exact' or 'linear' (default).
+        """
+        
         sortedkv = list(sorted(values2colors.items()))
         for value, color in sortedkv:
             self.color(value, color, mode)
@@ -612,6 +1013,24 @@ def norm_diff(in_ar, out_ar, xoff, yoff, xsize, ysize, raster_xsize, raster_ysiz
     
     # Identify: returns a scalar float/int/string or a list of scalars
     def identify(self, lon, lat, zoom=0):
+        """
+        Given in input a geographic coordinate  and a zoom level, returns a scalar float/int/string or a list of scalars containing info on the pixel under the (lat,lon) position.
+        
+        Parameters
+        ----------
+        lon : float
+            Longitude coordinate of the point for which to perform the identify operation.
+        lat : float
+            Latitude coordinate of the point for which to perform the identify operation.
+        zoom : int
+            Zoom level in the range [0,20] to use for the identify operation.
+        
+        Returns
+        --------
+        res : float/int/string or list of float/int/string
+            A scalar float/int/string or a list of scalars
+        """
+        
         while lon < -180.0: lon += 360.0
         while lon >  180.0: lon -= 360.0
         
@@ -637,6 +1056,52 @@ def norm_diff(in_ar, out_ar, xoff, yoff, xsize, ysize, raster_xsize, raster_ysiz
 
     # onclick called by a Map.Map instance
     def onclick(self, m, lon, lat, zoom):
+        """
+        Callback onclick called by a Map.Map instance when the user clicks on the map.
+        
+        Parameters
+        ----------
+        m : instance of vois Map.Map class
+            Map widget instance on which the click event occurs.
+        lon : float
+            Longitude coordinate of the point for which to perform the identify operation.
+        lat : float
+            Latitude coordinate of the point for which to perform the identify operation.
+        zoom : int
+            Zoom level in the range [0,20] to use for the identify operation.
+
+        Example
+        -------
+        Display of a single band from a VRT file with identify operation on click event::
+        
+            # Import libraries
+            from IPython.display import display
+            from vois.geo import Map
+            from geolayer.layer.raster_layer import RasterLayer
+
+            # Create a single RasterLayer istance to display the first band of a VRT file
+            ly = RasterLayer.single('/data/SWF_2018_005m_03035_V1_0.vrt', 
+                                    band=1, epsg=3035, nodata=0.0)
+                                    
+            # Display all pixels having value 1 with a pale green color
+            # (see colorizer() and color() for a complete description)
+            ly.color(value=1.0, color="#cefc20", mode="exact")
+
+            # Create a Map
+            m = Map.Map(zoom=14, basemapindex=1)
+            
+            # Add the layer to the map
+            m.addLayer(ly)
+            
+            # Set the identify operation
+            m.onclick = ly.onclick
+            
+            # Display the map
+            display(m)
+            
+        The default implementation of the RasterLayer.onclick method calls the RasterLayer.identify method and displays a popup on the map showing the textual content returned by the identify method.
+        """
+        
         res = self.identify(lon, lat, zoom)
         if not res is None:
             descriptions = [self._identify_label]
@@ -662,6 +1127,21 @@ def norm_diff(in_ar, out_ar, xoff, yoff, xsize, ysize, raster_xsize, raster_ysiz
 
     @property
     def identify_dict(self):
+        """
+        Get/Set the dictionary to be used in the identify operation (click on a pixel) to convert a numerical pixel value into a string description. It can be useful to display class names instead of numerical values when querying categorical raster bands (datasets where each integer value represents a class or category)
+        
+        Returns
+        --------
+        d : dict
+            Dictionary that assigns a string to each pixel value.
+
+        Example
+        -------
+        Programmatically change the identify dictionary::
+            
+            ly.identify_dict = {1: 'wheat', 2: 'maize'}
+            print(ly.identify_dict)
+        """
         return self._identify_dict
         
     @identify_dict.setter
@@ -671,6 +1151,21 @@ def norm_diff(in_ar, out_ar, xoff, yoff, xsize, ysize, raster_xsize, raster_ysiz
         
     @property
     def identify_integer(self):
+        """
+        Get/Set the flag that requests the identify operation (click on a pixel) to return an integer value.
+        
+        Returns
+        --------
+        flag : bool
+            True if the identify operation must return an integer value.
+
+        Example
+        -------
+        Programmatically change the identify integer flag::
+            
+            ly.identify_integer = True
+            print(ly.identify_integer)
+        """
         return self._identify_integer
         
     @identify_integer.setter
@@ -680,6 +1175,21 @@ def norm_diff(in_ar, out_ar, xoff, yoff, xsize, ysize, raster_xsize, raster_ysiz
         
     @property
     def identify_digits(self):
+        """
+        Get/Set the flag number of digits to use for the display of floating point values in an identify operation (click on a pixel).
+        
+        Returns
+        --------
+        n : int
+            Number of decimal digits to use for the display of floating point pixel values.
+
+        Example
+        -------
+        Programmatically change the identify_digits value::
+            
+            ly.identify_digits = 2
+            print(ly.identify_digits)
+        """
         return self._identify_digits
         
     @identify_digits.setter
@@ -689,6 +1199,21 @@ def norm_diff(in_ar, out_ar, xoff, yoff, xsize, ysize, raster_xsize, raster_ysiz
         
     @property
     def identify_label(self):
+        """
+        Get/Set the string to use in the display of an identify operation (click on a pixel).
+        
+        Returns
+        --------
+        label : str
+            Label to prepend to the pixel values displayed in an identify operation.
+
+        Example
+        -------
+        Programmatically change the identify_label value::
+            
+            ly.identify_label = 'Intensity value'
+            print(ly.identify_label)
+        """
         return self._identify_label
         
     @identify_label.setter
@@ -702,8 +1227,47 @@ def norm_diff(in_ar, out_ar, xoff, yoff, xsize, ysize, raster_xsize, raster_ysiz
     #####################################################################################################################################################
 
     # Returns an instance of ipyleaflet.TileLayer
-    def tileLayer(self, max_zoom=22):
-        url = self.tileUrl()
+    def tileLayer(self, max_zoom=22, file_format='png', cache=False):
+        """
+        Creates an ipyleaflet.TileLayer object from an instance of RasterLayer, to be added to a Map for display.
+        
+        Parameters
+        ----------
+        max_zoom : int, optional
+            Maximum zoom level to define for the layer (default is 22)
+        file_format : str, optional
+            Format of the tiles generated by the tilego server to serve the raster dataset in WMTS (default is 'png')
+        cache : bool, optional
+            Flag that enables the server-side caching of the tiles (default is False)
+        
+        Returns
+        --------
+        tlayer : ipyleaflet.TileLayer
+            Instance of ipyleaflet.TileLayer to be added to a Map
+
+        Example
+        -------
+        Create an ipyleaflet.TileLayer instance::
+        
+            # Import libraries
+            from IPython.display import display
+            import ipyleaflet
+            from geolayer.layer.raster_layer import RasterLayer
+
+            # Create a RasterLayer instance
+            rlayer = RasterLayer.single(...)
+            
+            # Create an ipyleaflet Map
+            m = ipyleaflet.Map()
+            
+            # Add the layer to the map
+            m.add(rlayer.tileLayer())
+            
+            # Display the map
+            display(m)
+        """
+        
+        url = self.tileUrl(file_format=file_format, cache=cache)
         if not url is None:
             return ipyleaflet.TileLayer(url=url, max_zoom=max_zoom, max_native_zoom=max_zoom)
 
@@ -714,6 +1278,21 @@ def norm_diff(in_ar, out_ar, xoff, yoff, xsize, ysize, raster_xsize, raster_ysiz
     
     # Returns the url to display the layer
     def tileUrl(self, file_format='png', cache=False):
+        """
+        Returns the url string that can be used to display the layer.
+        
+        Parameters
+        ----------
+        file_format : str, optional
+            Format of the tiles generated by the tilego server to serve the raster dataset in WMTS (default is 'png')
+        cache : bool, optional
+            Flag that enables the server-side caching of the tiles (default is False)
+            
+        Returns
+        --------
+        url : str
+            URL to be used to display the RasterLayer in a WMTS client, for instance ipyleaflet.Map widget, by creating a ipyleaflet.TileLayer instance from the returned URL string.
+        """
         procid = self.toLayer()
         if not procid is None:
             if cache:
@@ -724,6 +1303,9 @@ def norm_diff(in_ar, out_ar, xoff, yoff, xsize, ysize, raster_xsize, raster_ysiz
     
     # Save the layer in Redis and returns the procid
     def toLayer(self):
+        """
+        Saves the layer in Redis and returns the procid.
+        """
         xml = self.xml()
         self.procid = redisAPI.redisStore(xml)
         return self.procid
@@ -735,6 +1317,9 @@ def norm_diff(in_ar, out_ar, xoff, yoff, xsize, ysize, raster_xsize, raster_ysiz
     
     # Return the full XML in Mapnik syntax
     def xml(self, compositing='src-over'):
+        """
+        Returns the full XML in Mapnik syntax.
+        """
         
         self.md5 = self.MD5()
         
