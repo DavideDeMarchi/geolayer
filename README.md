@@ -2,7 +2,7 @@
 
 ![logo](./logo/geolayer_black_white_1024.png)
 
-Python library for the visualization of vector and raster data server by the **tilegeo** dynamic tile server.
+Python library for the visualization of vector and raster data served by the **tilegeo** dynamic tile server.
 
 The online documentation for the geolayer library is available here: [geolayer Help](https://geolayer.readthedocs.io)
 
